@@ -84,5 +84,5 @@ lazy val sbtAvro2s = (projectMatrix in file("sbt-avro2s"))
   .enablePlugins(SbtPlugin)
 
 lazy val versions = new {
-  val avro = "1.11.4"
+  val avro = "1.12.1"
 }

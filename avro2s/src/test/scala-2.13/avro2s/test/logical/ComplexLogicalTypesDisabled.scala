@@ -161,7 +161,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
         value match {
           case x: Int => Coproduct[Int :+: Long :+: CNil](x)
           case x: Long => Coproduct[Int :+: Long :+: CNil](x)
-          case _ => throw new AvroRuntimeException("Invalid value")
+          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 3 => this._option = {
@@ -180,7 +180,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
                 value match {
                   case x: Int => Coproduct[Int :+: Long :+: CNil](x)
                   case x: Long => Coproduct[Int :+: Long :+: CNil](x)
-                  case _ => throw new AvroRuntimeException("Invalid value")
+                  case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                 }
               })
             }
@@ -217,7 +217,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
               })
             }
           }
-          case _ => throw new AvroRuntimeException("Invalid value")
+          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 7 => this._union_array = {
@@ -231,7 +231,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
                 }).toList
               }
           }.toList)
-          case _ => throw new AvroRuntimeException("Invalid value")
+          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 8 => this._array_map = {
@@ -259,7 +259,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
               value match {
                 case x: Int => Coproduct[Int :+: Long :+: CNil](x)
                 case x: Long => Coproduct[Int :+: Long :+: CNil](x)
-                case _ => throw new AvroRuntimeException("Invalid value")
+                case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
               }
             }).toList
           }

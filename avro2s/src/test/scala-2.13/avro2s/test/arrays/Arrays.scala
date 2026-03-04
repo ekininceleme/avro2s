@@ -217,7 +217,7 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
               value match {
                 case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Int :+: CNil](x.toString)
                 case x: Int => Coproduct[String :+: Int :+: CNil](x)
-                case _ => throw new AvroRuntimeException("Invalid value")
+                case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
               }
             }).toList
           }
@@ -238,7 +238,7 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
                 case x: avro2s.test.arrays.Record1 => Coproduct[avro2s.test.arrays.Record1 :+: avro2s.test.arrays.Record2 :+: Int :+: CNil](x)
                 case x: avro2s.test.arrays.Record2 => Coproduct[avro2s.test.arrays.Record1 :+: avro2s.test.arrays.Record2 :+: Int :+: CNil](x)
                 case x: Int => Coproduct[avro2s.test.arrays.Record1 :+: avro2s.test.arrays.Record2 :+: Int :+: CNil](x)
-                case _ => throw new AvroRuntimeException("Invalid value")
+                case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
               }
             }).toList
           }
@@ -324,7 +324,7 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
               value match {
                 case x: avro2s.test.arrays.RecordA => Coproduct[avro2s.test.arrays.RecordA :+: avro2s.test.arrays.RecordB :+: CNil](x)
                 case x: avro2s.test.arrays.RecordB => Coproduct[avro2s.test.arrays.RecordA :+: avro2s.test.arrays.RecordB :+: CNil](x)
-                case _ => throw new AvroRuntimeException("Invalid value")
+                case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
               }
             }).toList
           }
@@ -336,7 +336,7 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
               value match {
                 case x: avro2s.test.arrays.EnumA => Coproduct[avro2s.test.arrays.EnumA :+: avro2s.test.arrays.EnumB :+: CNil](x)
                 case x: avro2s.test.arrays.EnumB => Coproduct[avro2s.test.arrays.EnumA :+: avro2s.test.arrays.EnumB :+: CNil](x)
-                case _ => throw new AvroRuntimeException("Invalid value")
+                case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
               }
             }).toList
           }
@@ -348,7 +348,7 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
               value match {
                 case x: avro2s.test.arrays.FixedA => Coproduct[avro2s.test.arrays.FixedA :+: avro2s.test.arrays.FixedB :+: CNil](x)
                 case x: avro2s.test.arrays.FixedB => Coproduct[avro2s.test.arrays.FixedA :+: avro2s.test.arrays.FixedB :+: CNil](x)
-                case _ => throw new AvroRuntimeException("Invalid value")
+                case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
               }
             }).toList
           }

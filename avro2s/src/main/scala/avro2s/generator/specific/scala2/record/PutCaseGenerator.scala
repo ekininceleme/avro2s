@@ -55,9 +55,14 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
         printer
           .add(s"case $index => this.${field.safeName} = ${ltc.toTypeWithFallback(field.schema(), value, fallback)}")
       case _ =>
-        val value = s"${toStringConverter("value", field.schema())}.asInstanceOf[${schemaToScalaType(field.schema, false)}]"
-        printer
-          .add(s"case $index => this.${field.safeName} = ${ltc.toType(field.schema(), value)}")
+        if (ltc.getConversionClass(field.schema()).isDefined) {
+          printer
+            .add(s"case $index => this.${field.safeName} = value.asInstanceOf[${ltc.getType(field.schema(), schemaToScalaType(field.schema, false))}]")
+        } else {
+          val value = s"${toStringConverter("value", field.schema())}.asInstanceOf[${schemaToScalaType(field.schema, false)}]"
+          printer
+            .add(s"case $index => this.${field.safeName} = ${ltc.toType(field.schema(), value)}")
+        }
     }
   }
 
@@ -124,8 +129,11 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
           .outdent
           .add("}")
       case _ =>
-        printer
-          .add(ltc.toType(schema, typeCast(valueName, schema)))
+        if (ltc.logicalTypeInUse(schema)) {
+          printer.add(ltc.toTypeAcceptBoth(schema, valueName))
+        } else {
+          printer.add(ltc.toType(schema, typeCast(valueName, schema)))
+        }
     }
   }
 
@@ -157,42 +165,48 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
         printer
           .call(matchBytes(_, "value", schema))
       case _ =>
-        printer
-          .add(ltc.toType(schema, typeCast("value", schema)))
+        if (ltc.logicalTypeInUse(schema)) {
+          printer.add(ltc.toTypeAcceptBoth(schema, "value"))
+        } else {
+          printer.add(ltc.toType(schema, typeCast("value", schema)))
+        }
     }
   }
 
   private def matchUnionInner(printer: FunctionalPrinter, union: UnionRepresentation): FunctionalPrinter = {
     union match {
       case CoproductRepresentation(types) => printer.add({
-        types.map { t =>
+        types.flatMap { t =>
           t.getType match {
-            case RECORD | ENUM => s"case x: ${t.getFullName} => Coproduct[${union.asString(typeHelpers)}](x)"
+            case RECORD | ENUM => List(s"case x: ${t.getFullName} => Coproduct[${union.asString(typeHelpers)}](x)")
             case MAP =>
-              new FunctionalPrinter()
+              List(new FunctionalPrinter()
                 .add(s"case map: java.util.Map[_,_] => Coproduct[${union.asString(typeHelpers)}]{")
                 .indent
                 .call(printMapValue(_, t))
                 .outdent
                 .add("}")
-                .result()
-            case FIXED => s"case x: ${t.getFullName} => Coproduct[${union.asString(typeHelpers)}](${ltc.toType(t, "x")})"
-            case BYTES => s"case x: java.nio.ByteBuffer => Coproduct[${union.asString(typeHelpers)}](${ltc.toTypeWithFallback(t, "x", "x.array()")})"
+                .result())
+            case FIXED => List(s"case x: ${t.getFullName} => Coproduct[${union.asString(typeHelpers)}](${ltc.toType(t, "x")})")
+            case BYTES => List(s"case x: java.nio.ByteBuffer => Coproduct[${union.asString(typeHelpers)}](${ltc.toTypeWithFallback(t, "x", "x.array()")})")
             case ARRAY =>
-              new FunctionalPrinter()
+              List(new FunctionalPrinter()
                 .add(s"case x: java.util.List[_] => Coproduct[${union.asString(typeHelpers)}]({")
                 .indent
                 .call(printArrayValue(_, "x", t))
                 .outdent
                 .add("}.toList)")
-                .result()
+                .result())
             case _ =>
               val typeName = simpleTypeToScalaReceiveType(t.getType)
               val x = toStringConverter("x", t)
               val `case` = if (t.getType == Type.NULL) "x @ null" else s"x: $typeName"
-              s"case ${`case`} => Coproduct[${union.asString(typeHelpers)}](${ltc.toType(t, x)})"
+              val logicalCase = ltc.logicalReceiveType(t).map { lrt =>
+                s"case x: $lrt => Coproduct[${union.asString(typeHelpers)}](x)"
+              }.toList
+              logicalCase :+ s"case ${`case`} => Coproduct[${union.asString(typeHelpers)}](${ltc.toType(t, x)})"
           }
-        } :+ "case _ => throw new AvroRuntimeException(\"Invalid value\")"
+        } :+ "case _ => throw new AvroRuntimeException(\"Unexpected type: \" + value.getClass.getName)"
       }.mkString("\n"))
       case OptionRepresentation(schema) =>
         val nullCasePrinter = printer.add("case null => None")
@@ -223,7 +237,10 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
           case _ =>
             val x = toStringConverter("x", schema)
             val xCase = Try(s"x: ${simpleTypeToScalaReceiveType(schema.getType)}").getOrElse("x")
-            nullCasePrinter
+            val withLogicalCase = ltc.logicalReceiveType(schema).map { lrt =>
+              nullCasePrinter.add(s"case x: $lrt => Some(x)")
+            }.getOrElse(nullCasePrinter)
+            withLogicalCase
               .add(s"case $xCase => Some(${ltc.toType(schema, x)})")
         }
     }

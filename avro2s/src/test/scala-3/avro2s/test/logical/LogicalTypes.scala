@@ -11,14 +11,14 @@ case class LogicalTypes(var _uuid: java.util.UUID, var _date: java.time.LocalDat
 
   override def get(field$: Int): AnyRef = {
     (field$: @switch) match {
-      case 0 => {_uuid.toString}.asInstanceOf[AnyRef]
-      case 1 => {_date.toEpochDay.toInt}.asInstanceOf[AnyRef]
-      case 2 => {(_time_millis.toNanoOfDay / 1000000L).toInt}.asInstanceOf[AnyRef]
-      case 3 => {_time_micros.toNanoOfDay / 1000L}.asInstanceOf[AnyRef]
-      case 4 => {_timestamp_millis.toEpochMilli}.asInstanceOf[AnyRef]
-      case 5 => {(_timestamp_micros.getEpochSecond * 1000000L) + (_timestamp_micros.getNano / 1000L)}.asInstanceOf[AnyRef]
-      case 6 => {_local_timestamp_millis.atZone(java.time.ZoneId.of("UTC")).toInstant.toEpochMilli}.asInstanceOf[AnyRef]
-      case 7 => {_local_timestamp_micros.atZone(java.time.ZoneId.of("UTC")).toInstant.getEpochSecond * 1000000L + _local_timestamp_micros.atZone(java.time.ZoneId.of("UTC")).toInstant.getNano / 1000L}.asInstanceOf[AnyRef]
+      case 0 => _uuid.asInstanceOf[AnyRef]
+      case 1 => _date.asInstanceOf[AnyRef]
+      case 2 => _time_millis.asInstanceOf[AnyRef]
+      case 3 => _time_micros.asInstanceOf[AnyRef]
+      case 4 => _timestamp_millis.asInstanceOf[AnyRef]
+      case 5 => _timestamp_micros.asInstanceOf[AnyRef]
+      case 6 => _local_timestamp_millis.asInstanceOf[AnyRef]
+      case 7 => _local_timestamp_micros.asInstanceOf[AnyRef]
       case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
@@ -26,30 +26,44 @@ case class LogicalTypes(var _uuid: java.util.UUID, var _date: java.time.LocalDat
   override def put(field$: Int, value: Any): Unit = {
     (field$: @switch) match {
       case 0 => this._uuid = {
-        {java.util.UUID.fromString(value.toString.asInstanceOf[String])}
+        value.asInstanceOf[java.util.UUID]
       }
       case 1 => this._date = {
-        {java.time.LocalDate.ofEpochDay(value.asInstanceOf[Int])}
+        value.asInstanceOf[java.time.LocalDate]
       }
       case 2 => this._time_millis = {
-        {java.time.LocalTime.ofNanoOfDay(value.asInstanceOf[Int] * 1000000L)}
+        value.asInstanceOf[java.time.LocalTime]
       }
       case 3 => this._time_micros = {
-        {java.time.LocalTime.ofNanoOfDay(value.asInstanceOf[Long] * 1000L)}
+        value.asInstanceOf[java.time.LocalTime]
       }
       case 4 => this._timestamp_millis = {
-        {java.time.Instant.ofEpochMilli(value.asInstanceOf[Long])}
+        value.asInstanceOf[java.time.Instant]
       }
       case 5 => this._timestamp_micros = {
-        {java.time.Instant.ofEpochSecond(value.asInstanceOf[Long] / 1000000L, (value.asInstanceOf[Long] % 1000000L) * 1000L)}
+        value.asInstanceOf[java.time.Instant]
       }
       case 6 => this._local_timestamp_millis = {
-        {java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(value.asInstanceOf[Long]), java.time.ZoneId.of("UTC"))}
+        value.asInstanceOf[java.time.LocalDateTime]
       }
       case 7 => this._local_timestamp_micros = {
-        {java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(value.asInstanceOf[Long] / 1000000L, (value.asInstanceOf[Long] % 1000000L) * 1000L), java.time.ZoneId.of("UTC"))}
+        value.asInstanceOf[java.time.LocalDateTime]
       }
       case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")
+    }
+  }
+
+  override def getConversion(field: Int): org.apache.avro.Conversion[?] = {
+    (field: @switch) match {
+      case 0 => new org.apache.avro.Conversions.UUIDConversion()
+      case 1 => new org.apache.avro.data.TimeConversions.DateConversion()
+      case 2 => new org.apache.avro.data.TimeConversions.TimeMillisConversion()
+      case 3 => new org.apache.avro.data.TimeConversions.TimeMicrosConversion()
+      case 4 => new org.apache.avro.data.TimeConversions.TimestampMillisConversion()
+      case 5 => new org.apache.avro.data.TimeConversions.TimestampMicrosConversion()
+      case 6 => new org.apache.avro.data.TimeConversions.LocalTimestampMillisConversion()
+      case 7 => new org.apache.avro.data.TimeConversions.LocalTimestampMicrosConversion()
+      case _ => null
     }
   }
 }

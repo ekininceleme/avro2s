@@ -375,7 +375,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
                           case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                           case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                           case x @ null => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                          case _ => throw new AvroRuntimeException("Invalid value")
+                          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                         }
                       })
                     }
@@ -385,7 +385,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
             }
           }
           case x @ null => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x)
-          case _ => throw new AvroRuntimeException("Invalid value")
+          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 1 => this._union_of_map_of_option = {
@@ -406,7 +406,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
             }
           }
           case x @ null => Coproduct[String :+: Long :+: Boolean :+: Map[String, Option[String]] :+: scala.Null :+: CNil](x)
-          case _ => throw new AvroRuntimeException("Invalid value")
+          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 2 => this._union_of_array_of_option = {
@@ -426,7 +426,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
               }
           }.toList)
           case x @ null => Coproduct[String :+: Long :+: Boolean :+: List[Option[String]] :+: scala.Null :+: CNil](x)
-          case _ => throw new AvroRuntimeException("Invalid value")
+          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 3 => this._union_of_array_of_union = {
@@ -445,13 +445,13 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
                     case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil](x)
                     case x: java.nio.ByteBuffer => Coproduct[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil](x.array())
                     case x @ null => Coproduct[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil](x)
-                    case _ => throw new AvroRuntimeException("Invalid value")
+                    case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                   }
                 }).toList
               }
           }.toList)
           case x @ null => Coproduct[String :+: Long :+: Boolean :+: List[String :+: Long :+: Boolean :+: Double :+: Array[Byte] :+: scala.Null :+: CNil] :+: scala.Null :+: CNil](x)
-          case _ => throw new AvroRuntimeException("Invalid value")
+          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 4 => this._union_of_array_of_array = {
@@ -472,7 +472,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
                           case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                           case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                           case x @ null => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                          case _ => throw new AvroRuntimeException("Invalid value")
+                          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                         }
                       }).toList
                     }
@@ -480,7 +480,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
               }
           }.toList)
           case x @ null => Coproduct[String :+: Long :+: Boolean :+: List[List[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x)
-          case _ => throw new AvroRuntimeException("Invalid value")
+          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 5 => this._union_of_records = {
@@ -491,7 +491,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
           case x: avro2s.test.unions.Record1 => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Record1 :+: avro2s.test.unions.Record2 :+: scala.Null :+: CNil](x)
           case x: avro2s.test.unions.Record2 => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Record1 :+: avro2s.test.unions.Record2 :+: scala.Null :+: CNil](x)
           case x @ null => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Record1 :+: avro2s.test.unions.Record2 :+: scala.Null :+: CNil](x)
-          case _ => throw new AvroRuntimeException("Invalid value")
+          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 6 => this._union_of_enum = {
@@ -501,7 +501,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
           case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Enum1 :+: scala.Null :+: CNil](x)
           case x: avro2s.test.unions.Enum1 => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Enum1 :+: scala.Null :+: CNil](x)
           case x @ null => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Enum1 :+: scala.Null :+: CNil](x)
-          case _ => throw new AvroRuntimeException("Invalid value")
+          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 7 => this._union_of_fixed = {
@@ -511,7 +511,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
           case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Fixed1 :+: scala.Null :+: CNil](x)
           case x: avro2s.test.unions.Fixed1 => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Fixed1 :+: scala.Null :+: CNil](x)
           case x @ null => Coproduct[String :+: Long :+: Boolean :+: avro2s.test.unions.Fixed1 :+: scala.Null :+: CNil](x)
-          case _ => throw new AvroRuntimeException("Invalid value")
+          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 8 => this._union_of_string = {
@@ -519,49 +519,49 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
           case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Long :+: scala.Null :+: CNil](x.toString)
           case x: Long => Coproduct[String :+: Long :+: scala.Null :+: CNil](x)
           case x @ null => Coproduct[String :+: Long :+: scala.Null :+: CNil](x)
-          case _ => throw new AvroRuntimeException("Invalid value")
+          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 9 => this._union_of_int = {
         value match {
           case x: Int => Coproduct[Int :+: String :+: CNil](x)
           case x: org.apache.avro.util.Utf8 => Coproduct[Int :+: String :+: CNil](x.toString)
-          case _ => throw new AvroRuntimeException("Invalid value")
+          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 10 => this._union_of_long = {
         value match {
           case x: Long => Coproduct[Long :+: String :+: CNil](x)
           case x: org.apache.avro.util.Utf8 => Coproduct[Long :+: String :+: CNil](x.toString)
-          case _ => throw new AvroRuntimeException("Invalid value")
+          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 11 => this._union_of_float = {
         value match {
           case x: Float => Coproduct[Float :+: String :+: CNil](x)
           case x: org.apache.avro.util.Utf8 => Coproduct[Float :+: String :+: CNil](x.toString)
-          case _ => throw new AvroRuntimeException("Invalid value")
+          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 12 => this._union_of_double = {
         value match {
           case x: Double => Coproduct[Double :+: String :+: CNil](x)
           case x: org.apache.avro.util.Utf8 => Coproduct[Double :+: String :+: CNil](x.toString)
-          case _ => throw new AvroRuntimeException("Invalid value")
+          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 13 => this._union_of_boolean = {
         value match {
           case x: Boolean => Coproduct[Boolean :+: String :+: CNil](x)
           case x: org.apache.avro.util.Utf8 => Coproduct[Boolean :+: String :+: CNil](x.toString)
-          case _ => throw new AvroRuntimeException("Invalid value")
+          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 14 => this._union_of_bytes = {
         value match {
           case x: java.nio.ByteBuffer => Coproduct[Array[Byte] :+: String :+: CNil](x.array())
           case x: org.apache.avro.util.Utf8 => Coproduct[Array[Byte] :+: String :+: CNil](x.toString)
-          case _ => throw new AvroRuntimeException("Invalid value")
+          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 15 => this._optional_record = {
@@ -749,7 +749,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
                   case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                   case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                   case x @ null => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                  case _ => throw new AvroRuntimeException("Invalid value")
+                  case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                 }
               })
             }
@@ -769,7 +769,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
                     case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                     case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                     case x @ null => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                    case _ => throw new AvroRuntimeException("Invalid value")
+                    case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                   }
                 }).toList
               }

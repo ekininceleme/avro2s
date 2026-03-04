@@ -8,71 +8,93 @@ import java.util.UUID
 class LogicalTypesTest extends AnyFunSuite with Matchers {
 
   import avro2s.serialization.SerializationHelpers._
-  
+
+  private def truncateMillis(t: java.time.LocalTime): java.time.LocalTime =
+    java.time.LocalTime.ofNanoOfDay((t.toNanoOfDay / 1000000L) * 1000000L)
+
+  private def truncateMicros(t: java.time.LocalTime): java.time.LocalTime =
+    java.time.LocalTime.ofNanoOfDay((t.toNanoOfDay / 1000L) * 1000L)
+
+  private def truncateMillis(i: java.time.Instant): java.time.Instant =
+    java.time.Instant.ofEpochMilli(i.toEpochMilli)
+
+  private def truncateMicros(i: java.time.Instant): java.time.Instant =
+    java.time.Instant.ofEpochSecond(i.getEpochSecond, (i.getNano / 1000L) * 1000L)
+
+  private def truncateMillisLdt(ldt: java.time.LocalDateTime): java.time.LocalDateTime =
+    java.time.LocalDateTime.ofInstant(truncateMillis(ldt.atZone(java.time.ZoneId.of("UTC")).toInstant), java.time.ZoneId.of("UTC"))
+
+  private def truncateMicrosLdt(ldt: java.time.LocalDateTime): java.time.LocalDateTime =
+    java.time.LocalDateTime.ofInstant(truncateMicros(ldt.atZone(java.time.ZoneId.of("UTC")).toInstant), java.time.ZoneId.of("UTC"))
+
   test("time-millis should work at the edges") {
     def logicalTypes(time: java.time.LocalTime) = avro2s.test.logical.LogicalTypes(
       _uuid = UUID.randomUUID(),
       _date = java.time.LocalDate.now(),
       _time_millis = time,
-      _time_micros = java.time.LocalTime.now(),
-      _timestamp_millis = java.time.Instant.now(),
-      _timestamp_micros = java.time.Instant.now(),
-      _local_timestamp_millis = java.time.LocalDateTime.now(),
-      _local_timestamp_micros = java.time.LocalDateTime.now()
+      _time_micros = truncateMicros(java.time.LocalTime.now()),
+      _timestamp_millis = truncateMillis(java.time.Instant.now()),
+      _timestamp_micros = truncateMicros(java.time.Instant.now()),
+      _local_timestamp_millis = truncateMillisLdt(java.time.LocalDateTime.now()),
+      _local_timestamp_micros = truncateMicrosLdt(java.time.LocalDateTime.now())
     )
-    
+
     val startOfDay = java.time.LocalTime.ofNanoOfDay(0)
     val endOfDay = java.time.LocalTime.ofNanoOfDay(86399999999999L)
     startOfDay.format(java.time.format.DateTimeFormatter.ISO_LOCAL_TIME) shouldBe "00:00:00"
     endOfDay.format(java.time.format.DateTimeFormatter.ISO_LOCAL_TIME) shouldBe "23:59:59.999999999"
-    
+
     val start = logicalTypes(startOfDay)
     val end = logicalTypes(endOfDay)
     deserialize[avro2s.test.logical.LogicalTypes](serialize(start), start.getSchema) shouldBe start
-    deserialize[avro2s.test.logical.LogicalTypes](serialize(end), end.getSchema) shouldBe end
-    
-    start.get(2) shouldBe 0
-    end.get(2) shouldBe 86399999
+    // endOfDay has nanosecond precision that gets truncated to millis
+    val endDeserialized = deserialize[avro2s.test.logical.LogicalTypes](serialize(end), end.getSchema)
+    endDeserialized._time_millis shouldBe java.time.LocalTime.ofNanoOfDay(86399999000000L)
+
+    start.get(2).asInstanceOf[java.time.LocalTime] shouldBe startOfDay
+    end.get(2).asInstanceOf[java.time.LocalTime] shouldBe endOfDay
   }
-  
+
   test("time-micros should work at the edges") {
     def logicalTypes(time: java.time.LocalTime) = avro2s.test.logical.LogicalTypes(
       _uuid = UUID.randomUUID(),
       _date = java.time.LocalDate.now(),
-      _time_millis = java.time.LocalTime.now(),
+      _time_millis = truncateMillis(java.time.LocalTime.now()),
       _time_micros = time,
-      _timestamp_millis = java.time.Instant.now(),
-      _timestamp_micros = java.time.Instant.now(),
-      _local_timestamp_millis = java.time.LocalDateTime.now(),
-      _local_timestamp_micros = java.time.LocalDateTime.now()
+      _timestamp_millis = truncateMillis(java.time.Instant.now()),
+      _timestamp_micros = truncateMicros(java.time.Instant.now()),
+      _local_timestamp_millis = truncateMillisLdt(java.time.LocalDateTime.now()),
+      _local_timestamp_micros = truncateMicrosLdt(java.time.LocalDateTime.now())
     )
-    
+
     val startOfDay = java.time.LocalTime.ofNanoOfDay(0)
     val endOfDay = java.time.LocalTime.ofNanoOfDay(86399999999999L)
     startOfDay.format(java.time.format.DateTimeFormatter.ISO_LOCAL_TIME) shouldBe "00:00:00"
     endOfDay.format(java.time.format.DateTimeFormatter.ISO_LOCAL_TIME) shouldBe "23:59:59.999999999"
-    
+
     val start = logicalTypes(startOfDay)
     val end = logicalTypes(endOfDay)
     deserialize[avro2s.test.logical.LogicalTypes](serialize(start), start.getSchema) shouldBe start
-    deserialize[avro2s.test.logical.LogicalTypes](serialize(end), end.getSchema) shouldBe end
-    
-    start.get(3) shouldBe 0L
-    end.get(3) shouldBe 86399999999L
+    // endOfDay has nanosecond precision that gets truncated to micros
+    val endDeserialized = deserialize[avro2s.test.logical.LogicalTypes](serialize(end), end.getSchema)
+    endDeserialized._time_micros shouldBe java.time.LocalTime.ofNanoOfDay(86399999999000L)
+
+    start.get(3).asInstanceOf[java.time.LocalTime] shouldBe startOfDay
+    end.get(3).asInstanceOf[java.time.LocalTime] shouldBe endOfDay
   }
-  
+
   test("timestamp-millis should work at the edges") {
     def logicalTypes(time: java.time.Instant) = avro2s.test.logical.LogicalTypes(
       _uuid = UUID.randomUUID(),
       _date = java.time.LocalDate.now(),
-      _time_millis = java.time.LocalTime.now(),
-      _time_micros = java.time.LocalTime.now(),
+      _time_millis = truncateMillis(java.time.LocalTime.now()),
+      _time_micros = truncateMicros(java.time.LocalTime.now()),
       _timestamp_millis = time,
-      _timestamp_micros = java.time.Instant.now(),
-      _local_timestamp_millis = java.time.LocalDateTime.now(),
-      _local_timestamp_micros = java.time.LocalDateTime.now()
+      _timestamp_micros = truncateMicros(java.time.Instant.now()),
+      _local_timestamp_millis = truncateMillisLdt(java.time.LocalDateTime.now()),
+      _local_timestamp_micros = truncateMicrosLdt(java.time.LocalDateTime.now())
     )
-    
+
     val startOfEpoch = java.time.Instant.ofEpochMilli(0)
     val endOfFormatRange = java.time.Instant.ofEpochMilli(253402300799999L)
     val postFormatRange = java.time.Instant.ofEpochMilli(253402300800000L)
@@ -83,7 +105,7 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     postFormatRange.toString shouldBe "+10000-01-01T00:00:00Z"
     upperBound.toString shouldBe "+292278994-08-17T07:12:55.807Z"
     startOfEra.toString shouldBe "0001-01-01T00:00:00Z"
-    
+
     val start = logicalTypes(startOfEpoch)
     val end = logicalTypes(endOfFormatRange)
     val post = logicalTypes(postFormatRange)
@@ -94,26 +116,26 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     deserialize[avro2s.test.logical.LogicalTypes](serialize(post), post.getSchema) shouldBe post
     deserialize[avro2s.test.logical.LogicalTypes](serialize(upper), upper.getSchema) shouldBe upper
     deserialize[avro2s.test.logical.LogicalTypes](serialize(era), era.getSchema) shouldBe era
-    
-    start.get(4) shouldBe 0L
-    end.get(4) shouldBe 253402300799999L
-    post.get(4) shouldBe 253402300800000L
-    upper.get(4) shouldBe Long.MaxValue
-    era.get(4) shouldBe -62135596800000L
+
+    start.get(4).asInstanceOf[java.time.Instant] shouldBe startOfEpoch
+    end.get(4).asInstanceOf[java.time.Instant] shouldBe endOfFormatRange
+    post.get(4).asInstanceOf[java.time.Instant] shouldBe postFormatRange
+    upper.get(4).asInstanceOf[java.time.Instant] shouldBe upperBound
+    era.get(4).asInstanceOf[java.time.Instant] shouldBe startOfEra
   }
-  
+
   test("timestamp-micros should work at the edges") {
     def logicalTypes(time: java.time.Instant) = avro2s.test.logical.LogicalTypes(
       _uuid = UUID.randomUUID(),
       _date = java.time.LocalDate.now(),
-      _time_millis = java.time.LocalTime.now(),
-      _time_micros = java.time.LocalTime.now(),
-      _timestamp_millis = java.time.Instant.now(),
+      _time_millis = truncateMillis(java.time.LocalTime.now()),
+      _time_micros = truncateMicros(java.time.LocalTime.now()),
+      _timestamp_millis = truncateMillis(java.time.Instant.now()),
       _timestamp_micros = time,
-      _local_timestamp_millis = java.time.LocalDateTime.now(),
-      _local_timestamp_micros = java.time.LocalDateTime.now()
+      _local_timestamp_millis = truncateMillisLdt(java.time.LocalDateTime.now()),
+      _local_timestamp_micros = truncateMicrosLdt(java.time.LocalDateTime.now())
     )
-    
+
     val startOfEpoch = java.time.Instant.ofEpochSecond(0, 0)
     val endOfFormatRange = java.time.Instant.ofEpochSecond(253402300799L, 999999000)
     val postFormatRange = java.time.Instant.ofEpochSecond(253402300800L, 0)
@@ -124,7 +146,7 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     postFormatRange.toString shouldBe "+10000-01-01T00:00:00Z"
     upperBound.toString shouldBe "+294247-01-10T04:00:54.775807Z"
     startOfEra.toString shouldBe "0001-01-01T00:00:00Z"
-    
+
     val start = logicalTypes(startOfEpoch)
     val end = logicalTypes(endOfFormatRange)
     val post = logicalTypes(postFormatRange)
@@ -135,26 +157,26 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     deserialize[avro2s.test.logical.LogicalTypes](serialize(post), post.getSchema) shouldBe post
     deserialize[avro2s.test.logical.LogicalTypes](serialize(upper), upper.getSchema) shouldBe upper
     deserialize[avro2s.test.logical.LogicalTypes](serialize(era), era.getSchema) shouldBe era
-    
-    start.get(5) shouldBe 0L
-    end.get(5) shouldBe 253402300799999999L
-    post.get(5) shouldBe 253402300800000000L
-    upper.get(5) shouldBe Long.MaxValue
-    era.get(5) shouldBe -62135596800000000L
+
+    start.get(5).asInstanceOf[java.time.Instant] shouldBe startOfEpoch
+    end.get(5).asInstanceOf[java.time.Instant] shouldBe endOfFormatRange
+    post.get(5).asInstanceOf[java.time.Instant] shouldBe postFormatRange
+    upper.get(5).asInstanceOf[java.time.Instant] shouldBe upperBound
+    era.get(5).asInstanceOf[java.time.Instant] shouldBe startOfEra
   }
-  
+
   test("local-timestamp-millis should work at the edges") {
     def logicalTypes(time: java.time.LocalDateTime) = avro2s.test.logical.LogicalTypes(
       _uuid = UUID.randomUUID(),
       _date = java.time.LocalDate.now(),
-      _time_millis = java.time.LocalTime.now(),
-      _time_micros = java.time.LocalTime.now(),
-      _timestamp_millis = java.time.Instant.now(),
-      _timestamp_micros = java.time.Instant.now(),
+      _time_millis = truncateMillis(java.time.LocalTime.now()),
+      _time_micros = truncateMicros(java.time.LocalTime.now()),
+      _timestamp_millis = truncateMillis(java.time.Instant.now()),
+      _timestamp_micros = truncateMicros(java.time.Instant.now()),
       _local_timestamp_millis = time,
-      _local_timestamp_micros = java.time.LocalDateTime.now()
+      _local_timestamp_micros = truncateMicrosLdt(java.time.LocalDateTime.now())
     )
-    
+
     val startOfEpoch = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(0), java.time.ZoneId.of("UTC"))
     val endOfFormatRange = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(253402300799999L), java.time.ZoneId.of("UTC"))
     val postFormatRange = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(253402300800000L), java.time.ZoneId.of("UTC"))
@@ -165,7 +187,7 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     postFormatRange.toString shouldBe "+10000-01-01T00:00"
     upperBound.toString shouldBe "+292278994-08-17T07:12:55.807"
     startOfEra.toString shouldBe "0001-01-01T00:00"
-    
+
     val start = logicalTypes(startOfEpoch)
     val end = logicalTypes(endOfFormatRange)
     val post = logicalTypes(postFormatRange)
@@ -176,26 +198,26 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     deserialize[avro2s.test.logical.LogicalTypes](serialize(post), post.getSchema) shouldBe post
     deserialize[avro2s.test.logical.LogicalTypes](serialize(upper), upper.getSchema) shouldBe upper
     deserialize[avro2s.test.logical.LogicalTypes](serialize(era), era.getSchema) shouldBe era
-    
-    start.get(6) shouldBe 0L
-    end.get(6) shouldBe 253402300799999L
-    post.get(6) shouldBe 253402300800000L
-    upper.get(6) shouldBe Long.MaxValue
-    era.get(6) shouldBe -62135596800000L
+
+    start.get(6).asInstanceOf[java.time.LocalDateTime] shouldBe startOfEpoch
+    end.get(6).asInstanceOf[java.time.LocalDateTime] shouldBe endOfFormatRange
+    post.get(6).asInstanceOf[java.time.LocalDateTime] shouldBe postFormatRange
+    upper.get(6).asInstanceOf[java.time.LocalDateTime] shouldBe upperBound
+    era.get(6).asInstanceOf[java.time.LocalDateTime] shouldBe startOfEra
   }
-  
+
   test("local-timestamp-micros should work at the edges") {
     def logicalTypes(time: java.time.LocalDateTime) = avro2s.test.logical.LogicalTypes(
       _uuid = UUID.randomUUID(),
       _date = java.time.LocalDate.now(),
-      _time_millis = java.time.LocalTime.now(),
-      _time_micros = java.time.LocalTime.now(),
-      _timestamp_millis = java.time.Instant.now(),
-      _timestamp_micros = java.time.Instant.now(),
-      _local_timestamp_millis = java.time.LocalDateTime.now(),
+      _time_millis = truncateMillis(java.time.LocalTime.now()),
+      _time_micros = truncateMicros(java.time.LocalTime.now()),
+      _timestamp_millis = truncateMillis(java.time.Instant.now()),
+      _timestamp_micros = truncateMicros(java.time.Instant.now()),
+      _local_timestamp_millis = truncateMillisLdt(java.time.LocalDateTime.now()),
       _local_timestamp_micros = time
     )
-    
+
     val startOfEpoch = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(0, 0), java.time.ZoneId.of("UTC"))
     val endOfFormatRange = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(253402300799L, 999999000), java.time.ZoneId.of("UTC"))
     val postFormatRange = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(253402300800L, 0), java.time.ZoneId.of("UTC"))
@@ -206,8 +228,8 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     postFormatRange.toString shouldBe "+10000-01-01T00:00"
     upperBound.toString shouldBe "+294247-01-10T04:00:54.775807"
     startOfEra.toString shouldBe "0001-01-01T00:00"
-    
-    
+
+
     val start = logicalTypes(startOfEpoch)
     val end = logicalTypes(endOfFormatRange)
     val post = logicalTypes(postFormatRange)
@@ -218,11 +240,11 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     deserialize[avro2s.test.logical.LogicalTypes](serialize(post), post.getSchema) shouldBe post
     deserialize[avro2s.test.logical.LogicalTypes](serialize(upper), upper.getSchema) shouldBe upper
     deserialize[avro2s.test.logical.LogicalTypes](serialize(era), era.getSchema) shouldBe era
-    
-    start.get(7) shouldBe 0L
-    end.get(7) shouldBe 253402300799999999L
-    post.get(7) shouldBe 253402300800000000L
-    upper.get(7) shouldBe Long.MaxValue
-    era.get(7) shouldBe -62135596800000000L
+
+    start.get(7).asInstanceOf[java.time.LocalDateTime] shouldBe startOfEpoch
+    end.get(7).asInstanceOf[java.time.LocalDateTime] shouldBe endOfFormatRange
+    post.get(7).asInstanceOf[java.time.LocalDateTime] shouldBe postFormatRange
+    upper.get(7).asInstanceOf[java.time.LocalDateTime] shouldBe upperBound
+    era.get(7).asInstanceOf[java.time.LocalDateTime] shouldBe startOfEra
   }
 }

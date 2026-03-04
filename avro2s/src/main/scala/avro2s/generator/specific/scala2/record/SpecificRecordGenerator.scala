@@ -66,6 +66,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .add("}")
       .outdent
       .add("}")
+      .call(printGetConversion(_, fields))
       .outdent
       .add("}")
       .newline
@@ -76,6 +77,30 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .add("}")
 
     GeneratedCode(s"${ns.map(_.replace(".", "/") + "/").getOrElse("") + name}.scala", code.result())
+  }
+
+  private def printGetConversion(printer: FunctionalPrinter, fields: List[Schema.Field]): FunctionalPrinter = {
+    val hasAnyConversion = fields.exists(f => ltc.getConversionClass(f.schema()).isDefined)
+    if (!hasAnyConversion) return printer
+
+    printer
+      .newline
+      .add("override def getConversion(field: Int): org.apache.avro.Conversion[_] = {")
+      .indent
+      .add("(field: @switch) match {")
+      .indent
+      .print(fields) { (p, field) =>
+        val idx = fields.indexOf(field)
+        ltc.getConversionClass(field.schema()) match {
+          case Some(cls) => p.add(s"case $idx => new $cls()")
+          case None => p.add(s"case $idx => null")
+        }
+      }
+      .add("case _ => null")
+      .outdent
+      .add("}")
+      .outdent
+      .add("}")
   }
 
   private def fieldsToParams(fields: List[Schema.Field]): String = {
