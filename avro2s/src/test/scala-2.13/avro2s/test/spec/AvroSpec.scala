@@ -102,7 +102,7 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
         value match {
           case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Int :+: CNil](x.toString)
           case x: Int => Coproduct[String :+: Int :+: CNil](x)
-          case _ => throw new AvroRuntimeException("Invalid value")
+          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case 13 => this._fixed = value.asInstanceOf[avro2s.test.spec.md5]

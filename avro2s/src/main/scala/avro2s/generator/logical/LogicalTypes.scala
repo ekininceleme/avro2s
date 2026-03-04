@@ -52,6 +52,30 @@ private[avro2s] object LogicalTypes {
       val key = LogicalTypeKey(schemaType, logicalTypeName)
       logicalTypeMap.get(key).exists(_.validate(schema))
     }
+
+    def getConversionClass(schema: Schema): Option[String] = {
+      Option(schema.getLogicalType).flatMap { logicalType =>
+        val key = LogicalTypeKey(schema.getType, logicalType.getName)
+        logicalTypeMap.get(key).filter(_.validate(schema)).map(_.conversionClass)
+      }
+    }
+
+    def toTypeAcceptBoth(schema: Schema, value: String): String = {
+      Option(schema.getLogicalType).map { logicalType =>
+        val key = LogicalTypeKey(schema.getType, logicalType.getName)
+        logicalTypeMap.get(key) match {
+          case Some(lt) if lt.validate(schema) => lt.toTypeAcceptBoth(value, schema)
+          case _ => value
+        }
+      }.getOrElse(value)
+    }
+
+    def logicalReceiveType(schema: Schema): Option[String] = {
+      Option(schema.getLogicalType).flatMap { logicalType =>
+        val key = LogicalTypeKey(schema.getType, logicalType.getName)
+        logicalTypeMap.get(key).filter(_.validate(schema)).map(_.getType(schema))
+      }
+    }
     
     def getDefault(schema: Schema): String = Option(schema.getLogicalType).map { logicalType =>
       val schemaType = schema.getType
@@ -72,8 +96,29 @@ private[avro2s] object LogicalTypes {
     def getType(schema: Schema): String
 
     def validate(schema: Schema): Boolean = true
-    
+
     def defaultValue(schema: Schema): String
+
+    def conversionClass: String
+
+    def toTypeAcceptBoth(value: String, schema: Schema): String = {
+      val castedX = schema.getType match {
+        case STRING => "x.toString"
+        case _ => s"x.asInstanceOf[${primitiveScalaType(schema.getType)}]"
+      }
+      s"($value match { case x: ${getType(schema)} => x; case x => ${toType(castedX, schema)} })"
+    }
+
+    private def primitiveScalaType(schemaType: Type): String = schemaType match {
+      case INT => "Int"
+      case LONG => "Long"
+      case FLOAT => "Float"
+      case DOUBLE => "Double"
+      case BOOLEAN => "Boolean"
+      case STRING => "String"
+      case BYTES => "Array[Byte]"
+      case _ => "Any"
+    }
   }
 
   case object UUID extends LogicalType("uuid", Set(STRING)) {
@@ -84,6 +129,8 @@ private[avro2s] object LogicalTypes {
     override def getType(schema: Schema): String = "java.util.UUID"
 
     override def defaultValue(schema: Schema): String = "java.util.UUID.fromString(\"00000000-0000-0000-0000-000000000000\")"
+
+    override def conversionClass: String = "org.apache.avro.Conversions.UUIDConversion"
   }
 
   case object Date extends LogicalType("date", Set(INT)) {
@@ -94,6 +141,8 @@ private[avro2s] object LogicalTypes {
     override def getType(schema: Schema): String = "java.time.LocalDate"
 
     override def defaultValue(schema: Schema): String = "java.time.LocalDate.ofEpochDay(0)"
+
+    override def conversionClass: String = "org.apache.avro.data.TimeConversions.DateConversion"
   }
 
   case object TimeMillisecondPrecision extends LogicalType("time-millis", Set(INT)) {
@@ -104,6 +153,8 @@ private[avro2s] object LogicalTypes {
     override def getType(schema: Schema): String = "java.time.LocalTime"
 
     override def defaultValue(schema: Schema): String = "java.time.LocalTime.ofNanoOfDay(0)"
+
+    override def conversionClass: String = "org.apache.avro.data.TimeConversions.TimeMillisConversion"
   }
 
   case object TimeMicrosecondPrecision extends LogicalType("time-micros", Set(LONG)) {
@@ -114,6 +165,8 @@ private[avro2s] object LogicalTypes {
     override def getType(schema: Schema): String = "java.time.LocalTime"
 
     override def defaultValue(schema: Schema): String = "java.time.LocalTime.ofNanoOfDay(0)"
+
+    override def conversionClass: String = "org.apache.avro.data.TimeConversions.TimeMicrosConversion"
   }
 
   case object TimestampMillisecondPrecision extends LogicalType("timestamp-millis", Set(LONG)) {
@@ -124,6 +177,8 @@ private[avro2s] object LogicalTypes {
     override def getType(schema: Schema): String = "java.time.Instant"
 
     override def defaultValue(schema: Schema): String = "java.time.Instant.ofEpochMilli(0)"
+
+    override def conversionClass: String = "org.apache.avro.data.TimeConversions.TimestampMillisConversion"
   }
 
   case object TimestampMicrosecondPrecision extends LogicalType("timestamp-micros", Set(LONG)) {
@@ -134,6 +189,8 @@ private[avro2s] object LogicalTypes {
     override def getType(schema: Schema): String = "java.time.Instant"
 
     override def defaultValue(schema: Schema): String = "java.time.Instant.ofEpochSecond(0, 0)"
+
+    override def conversionClass: String = "org.apache.avro.data.TimeConversions.TimestampMicrosConversion"
   }
 
   case object LocalTimestampMillisecondPrecision extends LogicalType("local-timestamp-millis", Set(LONG)) {
@@ -144,6 +201,8 @@ private[avro2s] object LogicalTypes {
     override def getType(schema: Schema): String = "java.time.LocalDateTime"
 
     override def defaultValue(schema: Schema): String = "java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(0), java.time.ZoneId.of(\"UTC\"))"
+
+    override def conversionClass: String = "org.apache.avro.data.TimeConversions.LocalTimestampMillisConversion"
   }
 
   case object LocalTimestampMicrosecondPrecision extends LogicalType("local-timestamp-micros", Set(LONG)) {
@@ -154,6 +213,8 @@ private[avro2s] object LogicalTypes {
     override def getType(schema: Schema): String = "java.time.LocalDateTime"
 
     override def defaultValue(schema: Schema): String = "java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(0, 0), java.time.ZoneId.of(\"UTC\"))"
+
+    override def conversionClass: String = "org.apache.avro.data.TimeConversions.LocalTimestampMicrosConversion"
   }
 
   // TODO: implement decimal
@@ -165,6 +226,8 @@ private[avro2s] object LogicalTypes {
     override def getType(schema: Schema): String = ???
 
     override def defaultValue(schema: Schema): String = ???
+
+    override def conversionClass: String = ???
   }
 
   // TODO: Implement duration
@@ -178,6 +241,8 @@ private[avro2s] object LogicalTypes {
     override def validate(schema: Schema): Boolean = schema.getFixedSize == 12
 
     override def defaultValue(schema: Schema): String = ???
+
+    override def conversionClass: String = ???
   }
 
   private val supportedLogicalTypes: List[LogicalType] = List(

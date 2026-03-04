@@ -77,9 +77,12 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
   }
 
   private def asDefault(printer: FunctionalPrinter, input: String, schema: Schema): FunctionalPrinter = {
-    val value = s"${toStringConverter(input, schema)}.asInstanceOf[${schemaToScalaType(schema, false)}]"
-    printer
-      .add(s"${ltc.toType(schema, value)}")
+    if (ltc.getConversionClass(schema).isDefined) {
+      printer.add(s"$input.asInstanceOf[${ltc.getType(schema, schemaToScalaType(schema, false))}]")
+    } else {
+      val value = s"${toStringConverter(input, schema)}.asInstanceOf[${schemaToScalaType(schema, false)}]"
+      printer.add(s"${ltc.toType(schema, value)}")
+    }
   }
 
   private def assignArray(printer: FunctionalPrinter, input: String, schema: Schema): FunctionalPrinter = {
@@ -102,38 +105,49 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
         printer
           .call(asBytes(_, input, schema))
       case _ =>
-        printer
-          .add(ltc.toType(schema, typeCast(input, schema)))
+        if (ltc.logicalTypeInUse(schema)) {
+          printer.add(ltc.toTypeAcceptBoth(schema, input))
+        } else {
+          printer.add(ltc.toType(schema, typeCast(input, schema)))
+        }
     }
   }
 
   private def matchUnionType(printer: FunctionalPrinter, union: TypeUnion): FunctionalPrinter = {
     union match {
       case TypeUnion(types) => printer.add({
-        types.map { t =>
+        types.flatMap { t =>
           t.getType match {
-            case RECORD | ENUM => s"case x: ${t.getFullName} => ${union.toConstructString(s"x.asInstanceOf[${union.innerTypeStr(typeHelpers)}]")}"
-            case FIXED => s"case x: ${t.getFullName} => ${union.toConstructString(s"${ltc.toType(t, "x")}.asInstanceOf[${union.innerTypeStr(typeHelpers)}]")}"
+            case RECORD | ENUM => List(s"case x: ${t.getFullName} => ${union.toConstructString(s"x.asInstanceOf[${union.innerTypeStr(typeHelpers)}]")}")
+            case FIXED => List(s"case x: ${t.getFullName} => ${union.toConstructString(s"${ltc.toType(t, "x")}.asInstanceOf[${union.innerTypeStr(typeHelpers)}]")}")
             case MAP =>
-              new FunctionalPrinter()
+              List(new FunctionalPrinter()
                 .add(s"case map: java.util.Map[?,?] =>")
                 .indent
                 .add(s"${union.toConstructString(assignMap(new FunctionalPrinter(), "map", t).result())}")
                 .outdent
-                .result()
-            case BYTES => s"case x: java.nio.ByteBuffer => ${union.toConstructString(ltc.toTypeWithFallback(t, "x", "x.array()"))}"
+                .result())
+            case BYTES => List(s"case x: java.nio.ByteBuffer => ${union.toConstructString(ltc.toTypeWithFallback(t, "x", "x.array()"))}")
             case ARRAY =>
-              new FunctionalPrinter()
+              List(new FunctionalPrinter()
                 .add(s"case array: java.util.List[?] =>")
                 .indent
                 .add(s"${union.toConstructString(assignArray(new FunctionalPrinter(), "array", t).result())}")
                 .outdent
-                .result()
+                .result())
             case _ =>
               t.getType match {
-                case Type.STRING => s"case x: org.apache.avro.util.Utf8 => ${union.toConstructString(ltc.toType(t, "x.toString"))}"
-                case Type.NULL => s"case null => None"
-                case _ => s"case x: ${simpleTypeToScalaReceiveType(t.getType)} => ${union.toConstructString(ltc.toType(t, "x"))}"
+                case Type.STRING =>
+                  val logicalCase = ltc.logicalReceiveType(t).map { lrt =>
+                    s"case x: $lrt => ${union.toConstructString("x")}"
+                  }.toList
+                  logicalCase :+ s"case x: org.apache.avro.util.Utf8 => ${union.toConstructString(ltc.toType(t, "x.toString"))}"
+                case Type.NULL => List(s"case null => None")
+                case _ =>
+                  val logicalCase = ltc.logicalReceiveType(t).map { lrt =>
+                    s"case x: $lrt => ${union.toConstructString("x")}"
+                  }.toList
+                  logicalCase :+ s"case x: ${simpleTypeToScalaReceiveType(t.getType)} => ${union.toConstructString(ltc.toType(t, "x"))}"
               }
           }
         } :+ "case _ => throw new org.apache.avro.AvroRuntimeException(\"Unexpected type: \" + value.getClass.getName)"
@@ -169,8 +183,11 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
         printer
           .call(asBytes(_, "value", schema))
       case _ =>
-        printer
-          .add(ltc.toType(schema, typeCast("value", schema)))
+        if (ltc.logicalTypeInUse(schema)) {
+          printer.add(ltc.toTypeAcceptBoth(schema, "value"))
+        } else {
+          printer.add(ltc.toType(schema, typeCast("value", schema)))
+        }
     }
   }
 }

@@ -73,7 +73,7 @@ case class RecordWithExplicitNamespace(var _string: String, var _record_with_nam
         value match {
           case x: avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaUnion => Coproduct[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaUnion :+: String :+: CNil](x)
           case x: org.apache.avro.util.Utf8 => Coproduct[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaUnion :+: String :+: CNil](x.toString)
-          case _ => throw new AvroRuntimeException("Invalid value")
+          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
       case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")

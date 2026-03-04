@@ -373,7 +373,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                 value match {
                   case x: org.apache.avro.util.Utf8 => Coproduct[String :+: Int :+: CNil](x.toString)
                   case x: Int => Coproduct[String :+: Int :+: CNil](x)
-                  case _ => throw new AvroRuntimeException("Invalid value")
+                  case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                 }
               })
             }
@@ -408,7 +408,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                                   case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                                   case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                                   case x @ null => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                                  case _ => throw new AvroRuntimeException("Invalid value")
+                                  case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                                 }
                               })
                             }
@@ -418,7 +418,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                     }
                   }
                   case x @ null => Coproduct[String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil](x)
-                  case _ => throw new AvroRuntimeException("Invalid value")
+                  case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                 }
               })
             }
@@ -490,7 +490,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                           case x: Boolean => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                           case x: Double => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
                           case x @ null => Coproduct[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil](x)
-                          case _ => throw new AvroRuntimeException("Invalid value")
+                          case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                         }
                       })
                     }
@@ -579,7 +579,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                   case x: avro2s.test.maps.Record => Coproduct[avro2s.test.maps.Record :+: Int :+: scala.Null :+: CNil](x)
                   case x: Int => Coproduct[avro2s.test.maps.Record :+: Int :+: scala.Null :+: CNil](x)
                   case x @ null => Coproduct[avro2s.test.maps.Record :+: Int :+: scala.Null :+: CNil](x)
-                  case _ => throw new AvroRuntimeException("Invalid value")
+                  case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                 }
               })
             }
@@ -710,7 +710,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                   }.toList)
                   case x: Int => Coproduct[List[String] :+: Int :+: scala.Null :+: CNil](x)
                   case x @ null => Coproduct[List[String] :+: Int :+: scala.Null :+: CNil](x)
-                  case _ => throw new AvroRuntimeException("Invalid value")
+                  case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                 }
               })
             }

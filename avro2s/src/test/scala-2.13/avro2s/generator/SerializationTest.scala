@@ -278,15 +278,18 @@ class SerializationTest extends AnyFunSuite with Matchers {
   }
   
   test("logical types can be serialized and deserialized") {
+    val now = java.time.Instant.now()
+    val nowMillis = java.time.Instant.ofEpochMilli(now.toEpochMilli)
+    val nowMicros = java.time.Instant.ofEpochSecond(now.getEpochSecond, (now.getNano / 1000L) * 1000L)
     val logicalTypes = avro2s.test.logical.LogicalTypes(
       _uuid = UUID.randomUUID(),
       _date = java.time.LocalDate.now(),
-      _time_millis = java.time.LocalTime.now(),
-      _time_micros = java.time.LocalTime.now(),
-      _timestamp_millis = java.time.Instant.now(),
-      _timestamp_micros = java.time.Instant.now(),
-      _local_timestamp_millis = java.time.LocalDateTime.now(),
-      _local_timestamp_micros = java.time.LocalDateTime.now()
+      _time_millis = java.time.LocalTime.ofNanoOfDay((java.time.LocalTime.now().toNanoOfDay / 1000000L) * 1000000L),
+      _time_micros = java.time.LocalTime.ofNanoOfDay((java.time.LocalTime.now().toNanoOfDay / 1000L) * 1000L),
+      _timestamp_millis = nowMillis,
+      _timestamp_micros = nowMicros,
+      _local_timestamp_millis = java.time.LocalDateTime.ofInstant(nowMillis, java.time.ZoneId.of("UTC")),
+      _local_timestamp_micros = java.time.LocalDateTime.ofInstant(nowMicros, java.time.ZoneId.of("UTC"))
     )
 
     deserialize[avro2s.test.logical.LogicalTypes](serialize(logicalTypes), logicalTypes.getSchema) shouldBe logicalTypes
@@ -304,9 +307,9 @@ class SerializationTest extends AnyFunSuite with Matchers {
       _local_timestamp_micros = java.time.LocalDateTime.now().toInstant(java.time.ZoneOffset.UTC).toEpochMilli * 1000
     )
 
-    deserialize[avro2s.test.logical.LogicalTypesDisabled](serialize(logicalTypesDisabled), logicalTypesDisabled.getSchema) shouldBe logicalTypesDisabled
+    deserializeWithoutConversions[avro2s.test.logical.LogicalTypesDisabled](serializeWithoutConversions(logicalTypesDisabled), logicalTypesDisabled.getSchema) shouldBe logicalTypesDisabled
   }
-  
+
   test("logical complex types can be serialized and deserialized") {
     val logicalComplexTypes = avro2s.test.logical.ComplexLogicalTypes(
       _map = Map("a" -> UUID.randomUUID, "c" -> UUID.randomUUID),
@@ -347,8 +350,8 @@ class SerializationTest extends AnyFunSuite with Matchers {
       _array_option = List(Some(UUID.randomUUID.toString), None)
     )
 
-    val serialized = serialize(logicalComplexTypesDisabled)
-    deserialize[avro2s.test.logical.ComplexLogicalTypesDisabled](serialized, logicalComplexTypesDisabled.getSchema) shouldBe logicalComplexTypesDisabled
+    val serialized = serializeWithoutConversions(logicalComplexTypesDisabled)
+    deserializeWithoutConversions[avro2s.test.logical.ComplexLogicalTypesDisabled](serialized, logicalComplexTypesDisabled.getSchema) shouldBe logicalComplexTypesDisabled
   }
   
   test("complex options can be serialized and deserialized") {
@@ -370,6 +373,21 @@ class SerializationTest extends AnyFunSuite with Matchers {
     deserialize[avro2s.test.unions.ComplexOptions](serialized, complexOptions.getSchema) shouldBe complexOptions
   }
   
+  test("fixed types can be serialized and deserialized standalone") {
+    val data = Array[Byte](0x6f, 0x6e, 0x65, 0x00, 0x74, 0x77, 0x6f, 0x00, 0x74, 0x68, 0x72, 0x65, 0x65, 0x72, 0x65, 0x65)
+    val fixed = avro2s.test.spec.md5(data)
+
+    val out = new java.io.ByteArrayOutputStream()
+    val encoder = org.apache.avro.io.EncoderFactory.get().binaryEncoder(out, null)
+    avro2s.test.spec.md5.WRITER$.write(fixed, encoder)
+    encoder.flush()
+
+    val decoder = org.apache.avro.io.DecoderFactory.get().binaryDecoder(out.toByteArray, null)
+    val result = avro2s.test.spec.md5.READER$.read(null, decoder)
+
+    result.bytes() shouldBe data
+  }
+
   test("empty records can be serialized and deserialized") {
     val emptyRecords = avro2s.test.records.EmptyRecords(
       _string = "foo",
