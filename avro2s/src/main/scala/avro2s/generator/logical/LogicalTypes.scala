@@ -117,7 +117,7 @@ private[avro2s] object LogicalTypes {
       case BOOLEAN => "Boolean"
       case STRING => "String"
       case BYTES => "Array[Byte]"
-      case _ => "Any"
+      case t => throw new IllegalArgumentException(s"Unsupported primitive type: $t")
     }
   }
 
