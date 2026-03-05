@@ -22,10 +22,10 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
     java.time.Instant.ofEpochSecond(i.getEpochSecond, (i.getNano / 1000L) * 1000L)
 
   private def truncateMillisLdt(ldt: java.time.LocalDateTime): java.time.LocalDateTime =
-    java.time.LocalDateTime.ofInstant(truncateMillis(ldt.atZone(java.time.ZoneId.of("UTC")).toInstant), java.time.ZoneId.of("UTC"))
+    java.time.LocalDateTime.ofInstant(truncateMillis(ldt.atZone(java.time.ZoneOffset.UTC).toInstant), java.time.ZoneOffset.UTC)
 
   private def truncateMicrosLdt(ldt: java.time.LocalDateTime): java.time.LocalDateTime =
-    java.time.LocalDateTime.ofInstant(truncateMicros(ldt.atZone(java.time.ZoneId.of("UTC")).toInstant), java.time.ZoneId.of("UTC"))
+    java.time.LocalDateTime.ofInstant(truncateMicros(ldt.atZone(java.time.ZoneOffset.UTC).toInstant), java.time.ZoneOffset.UTC)
 
   test("time-millis should work at the edges") {
     def logicalTypes(time: java.time.LocalTime) = avro2s.test.logical.LogicalTypes(

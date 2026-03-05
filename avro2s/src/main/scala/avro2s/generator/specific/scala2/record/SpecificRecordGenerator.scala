@@ -45,8 +45,8 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .indent
       .add("(field$: @switch) match {")
       .indent
-      .print(fields) { (printer, field) =>
-        getCaseGenerator.printFieldCase(printer, fields.indexOf(field), field)
+      .print(fields.zipWithIndex) { case (printer, (field, idx)) =>
+        getCaseGenerator.printFieldCase(printer, idx, field)
       }
       .add("case _ => throw new org.apache.avro.AvroRuntimeException(\"Bad index\")")
       .outdent
@@ -58,41 +58,40 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .indent
       .add("(field$: @switch) match {")
       .indent
-      .print(fields) { (printer, field) =>
-        putCaseGenerator.printFieldCase(printer, fields.indexOf(field), field)
+      .print(fields.zipWithIndex) { case (printer, (field, idx)) =>
+        putCaseGenerator.printFieldCase(printer, idx, field)
       }
       .add("case _ => throw new org.apache.avro.AvroRuntimeException(\"Bad index\")")
       .outdent
       .add("}")
       .outdent
       .add("}")
-      .call(printGetConversion(_, fields))
+      .call(printGetConversion(_, name, fields))
       .outdent
       .add("}")
       .newline
       .add(s"object $name {")
       .indent
       .add(s"""val SCHEMA$dollar: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(\"\"\"${schema.toString}\"\"\")""")
+      .call(printConversionVals(_, fields))
       .outdent
       .add("}")
 
     GeneratedCode(s"${ns.map(_.replace(".", "/") + "/").getOrElse("") + name}.scala", code.result())
   }
 
-  private def printGetConversion(printer: FunctionalPrinter, fields: List[Schema.Field]): FunctionalPrinter = {
+  private def printGetConversion(printer: FunctionalPrinter, name: String, fields: List[Schema.Field]): FunctionalPrinter = {
     val hasAnyConversion = fields.exists(f => ltc.getConversionClass(f.schema()).isDefined)
-    if (!hasAnyConversion) return printer
-
-    printer
+    if (!hasAnyConversion) printer
+    else printer
       .newline
       .add("override def getConversion(field: Int): org.apache.avro.Conversion[_] = {")
       .indent
       .add("(field: @switch) match {")
       .indent
-      .print(fields) { (p, field) =>
-        val idx = fields.indexOf(field)
+      .print(fields.zipWithIndex) { case (p, (field, idx)) =>
         ltc.getConversionClass(field.schema()) match {
-          case Some(cls) => p.add(s"case $idx => new $cls()")
+          case Some(_) => p.add(s"case $idx => $name.${field.safeName}$$Conversion")
           case None => p.add(s"case $idx => null")
         }
       }
@@ -101,6 +100,15 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .add("}")
       .outdent
       .add("}")
+  }
+
+  private def printConversionVals(printer: FunctionalPrinter, fields: List[Schema.Field]): FunctionalPrinter = {
+    fields.foldLeft(printer) { (p, field) =>
+      ltc.getConversionClass(field.schema()) match {
+        case Some(cls) => p.add(s"val ${field.safeName}$$Conversion: org.apache.avro.Conversion[_] = new $cls()")
+        case None => p
+      }
+    }
   }
 
   private def fieldsToParams(fields: List[Schema.Field]): String = {

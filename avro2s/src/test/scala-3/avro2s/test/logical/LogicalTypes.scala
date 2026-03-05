@@ -55,14 +55,14 @@ case class LogicalTypes(var _uuid: java.util.UUID, var _date: java.time.LocalDat
 
   override def getConversion(field: Int): org.apache.avro.Conversion[?] = {
     (field: @switch) match {
-      case 0 => new org.apache.avro.Conversions.UUIDConversion()
-      case 1 => new org.apache.avro.data.TimeConversions.DateConversion()
-      case 2 => new org.apache.avro.data.TimeConversions.TimeMillisConversion()
-      case 3 => new org.apache.avro.data.TimeConversions.TimeMicrosConversion()
-      case 4 => new org.apache.avro.data.TimeConversions.TimestampMillisConversion()
-      case 5 => new org.apache.avro.data.TimeConversions.TimestampMicrosConversion()
-      case 6 => new org.apache.avro.data.TimeConversions.LocalTimestampMillisConversion()
-      case 7 => new org.apache.avro.data.TimeConversions.LocalTimestampMicrosConversion()
+      case 0 => LogicalTypes._uuid$Conversion
+      case 1 => LogicalTypes._date$Conversion
+      case 2 => LogicalTypes._time_millis$Conversion
+      case 3 => LogicalTypes._time_micros$Conversion
+      case 4 => LogicalTypes._timestamp_millis$Conversion
+      case 5 => LogicalTypes._timestamp_micros$Conversion
+      case 6 => LogicalTypes._local_timestamp_millis$Conversion
+      case 7 => LogicalTypes._local_timestamp_micros$Conversion
       case _ => null
     }
   }
@@ -70,4 +70,12 @@ case class LogicalTypes(var _uuid: java.util.UUID, var _date: java.time.LocalDat
 
 object LogicalTypes {
   val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"LogicalTypes","namespace":"avro2s.test.logical","fields":[{"name":"_uuid","type":{"type":"string","logicalType":"uuid"}},{"name":"_date","type":{"type":"int","logicalType":"date"}},{"name":"_time_millis","type":{"type":"int","logicalType":"time-millis"}},{"name":"_time_micros","type":{"type":"long","logicalType":"time-micros"}},{"name":"_timestamp_millis","type":{"type":"long","logicalType":"timestamp-millis"}},{"name":"_timestamp_micros","type":{"type":"long","logicalType":"timestamp-micros"}},{"name":"_local_timestamp_millis","type":{"type":"long","logicalType":"local-timestamp-millis"}},{"name":"_local_timestamp_micros","type":{"type":"long","logicalType":"local-timestamp-micros"}}]}""")
+  val _uuid$Conversion: org.apache.avro.Conversion[?] = new org.apache.avro.Conversions.UUIDConversion()
+  val _date$Conversion: org.apache.avro.Conversion[?] = new org.apache.avro.data.TimeConversions.DateConversion()
+  val _time_millis$Conversion: org.apache.avro.Conversion[?] = new org.apache.avro.data.TimeConversions.TimeMillisConversion()
+  val _time_micros$Conversion: org.apache.avro.Conversion[?] = new org.apache.avro.data.TimeConversions.TimeMicrosConversion()
+  val _timestamp_millis$Conversion: org.apache.avro.Conversion[?] = new org.apache.avro.data.TimeConversions.TimestampMillisConversion()
+  val _timestamp_micros$Conversion: org.apache.avro.Conversion[?] = new org.apache.avro.data.TimeConversions.TimestampMicrosConversion()
+  val _local_timestamp_millis$Conversion: org.apache.avro.Conversion[?] = new org.apache.avro.data.TimeConversions.LocalTimestampMillisConversion()
+  val _local_timestamp_micros$Conversion: org.apache.avro.Conversion[?] = new org.apache.avro.data.TimeConversions.LocalTimestampMicrosConversion()
 }
