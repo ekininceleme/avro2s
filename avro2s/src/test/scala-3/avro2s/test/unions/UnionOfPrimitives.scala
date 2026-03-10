@@ -2,9 +2,11 @@
 
 package avro2s.test.unions
 import scala.annotation.switch
-case class UnionOfPrimitives(var _primitives: Long | Boolean | Int) extends org.apache.avro.specific.SpecificRecordBase {
+import org.apache.avro.{AvroRuntimeException, Conversion, Schema}
+import org.apache.avro.specific.{SpecificData, SpecificRecordBase}
+case class UnionOfPrimitives(var _primitives: Long | Boolean | Int) extends SpecificRecordBase {
   def this() = this(0)
-  override def getSchema: org.apache.avro.Schema = UnionOfPrimitives.SCHEMA$
+  override def getSchema: Schema = UnionOfPrimitives.SCHEMA$
   override def get(field$ : Int): AnyRef = {
     (field$ : @switch) match {
       case 0 =>
@@ -17,7 +19,7 @@ case class UnionOfPrimitives(var _primitives: Long | Boolean | Int) extends org.
             x.asInstanceOf[AnyRef]
         }
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
   override def put(field$ : Int, value: Any): Unit = {
@@ -36,11 +38,11 @@ case class UnionOfPrimitives(var _primitives: Long | Boolean | Int) extends org.
           }
         }
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
 }
 object UnionOfPrimitives {
-  val SCHEMA$ : org.apache.avro.Schema = new org.apache.avro.Schema.Parser()
+  val SCHEMA$ : Schema = new Schema.Parser()
     .parse("{\"type\":\"record\",\"name\":\"UnionOfPrimitives\",\"namespace\":\"avro2s.test.unions\",\"fields\":[{\"name\":\"_primitives\",\"type\":[\"long\",\"boolean\",\"int\"]}]}")
 }

@@ -2,7 +2,8 @@
 
 package avro2s.test.logical
 import scala.annotation.switch
-import org.apache.avro.AvroRuntimeException
+import org.apache.avro.{AvroRuntimeException, Conversion, Schema}
+import org.apache.avro.specific.{SpecificData, SpecificRecordBase}
 import shapeless.{:+:, CNil, Coproduct, Inl, Inr}
 case class ComplexLogicalTypes(
     var _map: Map[String, java.util.UUID],
@@ -22,7 +23,7 @@ case class ComplexLogicalTypes(
     var _array_union: List[Int :+: java.time.Instant :+: CNil],
     var _array_option: List[Option[java.util.UUID]],
     var _array_option_alt: List[Option[java.time.LocalDate]]
-) extends org.apache.avro.specific.SpecificRecordBase {
+) extends SpecificRecordBase {
   def this() = this(
     Map.empty,
     Map.empty,
@@ -42,8 +43,8 @@ case class ComplexLogicalTypes(
     List.empty,
     List.empty
   )
-  override def getSchema: org.apache.avro.Schema = ComplexLogicalTypes.SCHEMA$
-  override def getSpecificData(): org.apache.avro.specific.SpecificData = ComplexLogicalTypes.MODEL$
+  override def getSchema: Schema = ComplexLogicalTypes.SCHEMA$
+  override def getSpecificData(): SpecificData = ComplexLogicalTypes.MODEL$
   override def get(field$ : Int): AnyRef = {
     (field$ : @switch) match {
       case 0 =>
@@ -289,7 +290,7 @@ case class ComplexLogicalTypes(
               .asJava
         }
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
   override def put(field$ : Int, value: Any): Unit = {
@@ -601,16 +602,16 @@ case class ComplexLogicalTypes(
           }
         }
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
 }
 object ComplexLogicalTypes {
-  val SCHEMA$ : org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(
+  val SCHEMA$ : Schema = new Schema.Parser().parse(
     "{\"type\":\"record\",\"name\":\"ComplexLogicalTypes\",\"namespace\":\"avro2s.test.logical\",\"fields\":[{\"name\":\"_map\",\"type\":{\"type\":\"map\",\"values\":{\"type\":\"string\",\"logicalType\":\"uuid\"}}},{\"name\":\"_map_alt\",\"type\":{\"type\":\"map\",\"values\":{\"type\":\"int\",\"logicalType\":\"date\"}}},{\"name\":\"_array\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"int\",\"logicalType\":\"date\"}}},{\"name\":\"_union\",\"type\":[\"int\",{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}]},{\"name\":\"_option\",\"type\":[\"null\",{\"type\":\"string\",\"logicalType\":\"uuid\"}]},{\"name\":\"_option_alt\",\"type\":[\"null\",{\"type\":\"int\",\"logicalType\":\"date\"}]},{\"name\":\"_map_union\",\"type\":{\"type\":\"map\",\"values\":[\"int\",{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}]}},{\"name\":\"_map_option\",\"type\":{\"type\":\"map\",\"values\":[\"null\",{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}]}},{\"name\":\"_map_array\",\"type\":{\"type\":\"map\",\"values\":{\"type\":\"array\",\"items\":{\"type\":\"int\",\"logicalType\":\"date\"}}}},{\"name\":\"_union_map\",\"type\":[\"int\",{\"type\":\"map\",\"values\":{\"type\":\"string\",\"logicalType\":\"uuid\"}}]},{\"name\":\"_union_map_alt\",\"type\":[\"int\",{\"type\":\"map\",\"values\":{\"type\":\"int\",\"logicalType\":\"date\"}}]},{\"name\":\"_union_array\",\"type\":[\"int\",{\"type\":\"array\",\"items\":{\"type\":\"int\",\"logicalType\":\"date\"}}]},{\"name\":\"_array_map\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"map\",\"values\":{\"type\":\"string\",\"logicalType\":\"uuid\"}}}},{\"name\":\"_array_map_alt\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"map\",\"values\":{\"type\":\"int\",\"logicalType\":\"date\"}}}},{\"name\":\"_array_union\",\"type\":{\"type\":\"array\",\"items\":[\"int\",{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}]}},{\"name\":\"_array_option\",\"type\":{\"type\":\"array\",\"items\":[\"null\",{\"type\":\"string\",\"logicalType\":\"uuid\"}]}},{\"name\":\"_array_option_alt\",\"type\":{\"type\":\"array\",\"items\":[\"null\",{\"type\":\"int\",\"logicalType\":\"date\"}]}}]}"
   )
-  val MODEL$ : org.apache.avro.specific.SpecificData = {
-    val model = new org.apache.avro.specific.SpecificData()
+  val MODEL$ : SpecificData = {
+    val model = new SpecificData()
     model.addLogicalTypeConversion(new org.apache.avro.Conversions.UUIDConversion())
     model.addLogicalTypeConversion(new org.apache.avro.data.TimeConversions.DateConversion())
     model.addLogicalTypeConversion(new org.apache.avro.data.TimeConversions.TimeMillisConversion())

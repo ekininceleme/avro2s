@@ -2,15 +2,17 @@
 
 package avro2s.test.namespaces.explicit
 import scala.annotation.switch
-case class RecordWithNamespaceInheritedFromIndirectNonTopLevelParent(var _string: String) extends org.apache.avro.specific.SpecificRecordBase {
+import org.apache.avro.{AvroRuntimeException, Conversion, Schema}
+import org.apache.avro.specific.{SpecificData, SpecificRecordBase}
+case class RecordWithNamespaceInheritedFromIndirectNonTopLevelParent(var _string: String) extends SpecificRecordBase {
   def this() = this("")
-  override def getSchema: org.apache.avro.Schema = RecordWithNamespaceInheritedFromIndirectNonTopLevelParent.SCHEMA$
+  override def getSchema: Schema = RecordWithNamespaceInheritedFromIndirectNonTopLevelParent.SCHEMA$
   override def get(field$ : Int): AnyRef = {
     (field$ : @switch) match {
       case 0 =>
         _string.asInstanceOf[AnyRef]
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
   override def put(field$ : Int, value: Any): Unit = {
@@ -20,12 +22,12 @@ case class RecordWithNamespaceInheritedFromIndirectNonTopLevelParent(var _string
           value.toString.asInstanceOf[String]
         }
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
 }
 object RecordWithNamespaceInheritedFromIndirectNonTopLevelParent {
-  val SCHEMA$ : org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(
+  val SCHEMA$ : Schema = new Schema.Parser().parse(
     "{\"type\":\"record\",\"name\":\"RecordWithNamespaceInheritedFromIndirectNonTopLevelParent\",\"namespace\":\"avro2s.test.namespaces.explicit\",\"fields\":[{\"name\":\"_string\",\"type\":\"string\"}]}"
   )
 }

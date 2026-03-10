@@ -2,6 +2,8 @@
 
 package avro2s.test.logical
 import scala.annotation.switch
+import org.apache.avro.{AvroRuntimeException, Conversion, Schema}
+import org.apache.avro.specific.{SpecificData, SpecificRecordBase}
 case class LogicalTypesDisabled(
     var _uuid: String,
     var _date: Int,
@@ -11,9 +13,9 @@ case class LogicalTypesDisabled(
     var _timestamp_micros: Long,
     var _local_timestamp_millis: Long,
     var _local_timestamp_micros: Long
-) extends org.apache.avro.specific.SpecificRecordBase {
+) extends SpecificRecordBase {
   def this() = this("", 0, 0, 0, 0, 0, 0, 0)
-  override def getSchema: org.apache.avro.Schema = LogicalTypesDisabled.SCHEMA$
+  override def getSchema: Schema = LogicalTypesDisabled.SCHEMA$
   override def get(field$ : Int): AnyRef = {
     (field$ : @switch) match {
       case 0 =>
@@ -33,7 +35,7 @@ case class LogicalTypesDisabled(
       case 7 =>
         _local_timestamp_micros.asInstanceOf[AnyRef]
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
   override def put(field$ : Int, value: Any): Unit = {
@@ -71,12 +73,12 @@ case class LogicalTypesDisabled(
           value.asInstanceOf[Long]
         }
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
 }
 object LogicalTypesDisabled {
-  val SCHEMA$ : org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(
+  val SCHEMA$ : Schema = new Schema.Parser().parse(
     "{\"type\":\"record\",\"name\":\"LogicalTypesDisabled\",\"namespace\":\"avro2s.test.logical\",\"fields\":[{\"name\":\"_uuid\",\"type\":{\"type\":\"string\",\"logicalType\":\"uuid\"}},{\"name\":\"_date\",\"type\":{\"type\":\"int\",\"logicalType\":\"date\"}},{\"name\":\"_time_millis\",\"type\":{\"type\":\"int\",\"logicalType\":\"time-millis\"}},{\"name\":\"_time_micros\",\"type\":{\"type\":\"long\",\"logicalType\":\"time-micros\"}},{\"name\":\"_timestamp_millis\",\"type\":{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}},{\"name\":\"_timestamp_micros\",\"type\":{\"type\":\"long\",\"logicalType\":\"timestamp-micros\"}},{\"name\":\"_local_timestamp_millis\",\"type\":{\"type\":\"long\",\"logicalType\":\"local-timestamp-millis\"}},{\"name\":\"_local_timestamp_micros\",\"type\":{\"type\":\"long\",\"logicalType\":\"local-timestamp-micros\"}}]}"
   )
 }

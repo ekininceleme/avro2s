@@ -2,6 +2,8 @@
 
 package avro2s.test.spec
 import scala.annotation.switch
+import org.apache.avro.{AvroRuntimeException, Conversion, Schema}
+import org.apache.avro.specific.{SpecificData, SpecificRecordBase}
 case class AvroSpec(
     var _null: scala.Null,
     var _boolean: Boolean,
@@ -17,9 +19,9 @@ case class AvroSpec(
     var _union_nullable: Option[String],
     var _union_other: String | Int,
     var _fixed: avro2s.test.spec.md5
-) extends org.apache.avro.specific.SpecificRecordBase {
+) extends SpecificRecordBase {
   def this() = this(null, false, 0, 0, 0, 0, Array[Byte](), "", null, List.empty, Map.empty, None, "", new avro2s.test.spec.md5())
-  override def getSchema: org.apache.avro.Schema = AvroSpec.SCHEMA$
+  override def getSchema: Schema = AvroSpec.SCHEMA$
   override def get(field$ : Int): AnyRef = {
     (field$ : @switch) match {
       case 0 =>
@@ -80,7 +82,7 @@ case class AvroSpec(
       case 13 =>
         _fixed.asInstanceOf[AnyRef]
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
   override def put(field$ : Int, value: Any): Unit = {
@@ -175,12 +177,12 @@ case class AvroSpec(
           value.asInstanceOf[avro2s.test.spec.md5]
         }
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
 }
 object AvroSpec {
-  val SCHEMA$ : org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(
+  val SCHEMA$ : Schema = new Schema.Parser().parse(
     "{\"type\":\"record\",\"name\":\"AvroSpec\",\"namespace\":\"avro2s.test.spec\",\"fields\":[{\"name\":\"_null\",\"type\":\"null\"},{\"name\":\"_boolean\",\"type\":\"boolean\"},{\"name\":\"_int\",\"type\":\"int\"},{\"name\":\"_long\",\"type\":\"long\"},{\"name\":\"_float\",\"type\":\"float\"},{\"name\":\"_double\",\"type\":\"double\"},{\"name\":\"_bytes\",\"type\":\"bytes\"},{\"name\":\"_string\",\"type\":\"string\"},{\"name\":\"_enum\",\"type\":{\"type\":\"enum\",\"name\":\"Suit\",\"symbols\":[\"SPADES\",\"HEARTS\",\"DIAMONDS\",\"CLUBS\"]}},{\"name\":\"_array\",\"type\":{\"type\":\"array\",\"items\":\"string\",\"default\":[]}},{\"name\":\"_map\",\"type\":{\"type\":\"map\",\"values\":\"long\",\"default\":{}}},{\"name\":\"_union_nullable\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"_union_other\",\"type\":[\"string\",\"int\"]},{\"name\":\"_fixed\",\"type\":{\"type\":\"fixed\",\"name\":\"md5\",\"size\":16}}]}"
   )
 }

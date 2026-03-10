@@ -2,6 +2,8 @@
 
 package avro2s.test.unions
 import scala.annotation.switch
+import org.apache.avro.{AvroRuntimeException, Conversion, Schema}
+import org.apache.avro.specific.{SpecificData, SpecificRecordBase}
 case class ComplexOptions(
     var _map_of_option_of_record: Map[String, Option[avro2s.test.unions.RecordForComplexOptions]],
     var _map_of_option_of_map: Map[String, Option[Map[String, String]]],
@@ -14,9 +16,9 @@ case class ComplexOptions(
     var _map_of_option_of_bytes: Map[String, Option[Array[Byte]]],
     var _map_of_option_of_fixed: Map[String, Option[avro2s.test.unions.FixedForComplexOptions]],
     var _map_of_option_of_enum: Map[String, Option[avro2s.test.unions.EnumForComplexOptions]]
-) extends org.apache.avro.specific.SpecificRecordBase {
+) extends SpecificRecordBase {
   def this() = this(Map.empty, Map.empty, Map.empty, List.empty, List.empty, List.empty, List.empty, Map.empty, Map.empty, Map.empty, Map.empty)
-  override def getSchema: org.apache.avro.Schema = ComplexOptions.SCHEMA$
+  override def getSchema: Schema = ComplexOptions.SCHEMA$
   override def get(field$ : Int): AnyRef = {
     (field$ : @switch) match {
       case 0 =>
@@ -239,7 +241,7 @@ case class ComplexOptions(
           map
         }.asInstanceOf[AnyRef]
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
   override def put(field$ : Int, value: Any): Unit = {
@@ -505,12 +507,12 @@ case class ComplexOptions(
           }
         }
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
 }
 object ComplexOptions {
-  val SCHEMA$ : org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(
+  val SCHEMA$ : Schema = new Schema.Parser().parse(
     "{\"type\":\"record\",\"name\":\"ComplexOptions\",\"namespace\":\"avro2s.test.unions\",\"fields\":[{\"name\":\"_map_of_option_of_record\",\"type\":{\"type\":\"map\",\"values\":[\"null\",{\"type\":\"record\",\"name\":\"RecordForComplexOptions\",\"fields\":[{\"name\":\"field1\",\"type\":\"string\"}]}]}},{\"name\":\"_map_of_option_of_map\",\"type\":{\"type\":\"map\",\"values\":[\"null\",{\"type\":\"map\",\"values\":\"string\"}]}},{\"name\":\"_map_of_option_of_array\",\"type\":{\"type\":\"map\",\"values\":[\"null\",{\"type\":\"array\",\"items\":\"string\"}]}},{\"name\":\"_array_of_option_of_record\",\"type\":{\"type\":\"array\",\"items\":[\"null\",\"RecordForComplexOptions\"]}},{\"name\":\"_array_of_option_of_map\",\"type\":{\"type\":\"array\",\"items\":[\"null\",{\"type\":\"map\",\"values\":\"string\"}]}},{\"name\":\"_array_of_option_of_array\",\"type\":{\"type\":\"array\",\"items\":[\"null\",{\"type\":\"array\",\"items\":\"string\"}]}},{\"name\":\"_array_of_map_of_option_of_record\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"map\",\"values\":[\"null\",\"RecordForComplexOptions\"]}}},{\"name\":\"_map_of_array_of_option_of_record\",\"type\":{\"type\":\"map\",\"values\":{\"type\":\"array\",\"items\":[\"null\",\"RecordForComplexOptions\"]}}},{\"name\":\"_map_of_option_of_bytes\",\"type\":{\"type\":\"map\",\"values\":[\"null\",\"bytes\"]}},{\"name\":\"_map_of_option_of_fixed\",\"type\":{\"type\":\"map\",\"values\":[\"null\",{\"type\":\"fixed\",\"name\":\"FixedForComplexOptions\",\"size\":16}]}},{\"name\":\"_map_of_option_of_enum\",\"type\":{\"type\":\"map\",\"values\":[\"null\",{\"type\":\"enum\",\"name\":\"EnumForComplexOptions\",\"symbols\":[\"A\",\"B\",\"C\"]}]}}]}"
   )
 }

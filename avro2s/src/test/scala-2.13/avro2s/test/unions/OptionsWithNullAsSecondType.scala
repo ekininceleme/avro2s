@@ -2,14 +2,16 @@
 
 package avro2s.test.unions
 import scala.annotation.switch
+import org.apache.avro.{AvroRuntimeException, Conversion, Schema}
+import org.apache.avro.specific.{SpecificData, SpecificRecordBase}
 case class OptionsWithNullAsSecondType(
     var _simple: Option[String],
     var _optional_array: Option[List[Boolean]],
     var _array_of_options: List[Option[String]],
     var _map_of_options: Map[String, Option[String]]
-) extends org.apache.avro.specific.SpecificRecordBase {
+) extends SpecificRecordBase {
   def this() = this(None, None, List.empty, Map.empty)
-  override def getSchema: org.apache.avro.Schema = OptionsWithNullAsSecondType.SCHEMA$
+  override def getSchema: Schema = OptionsWithNullAsSecondType.SCHEMA$
   override def get(field$ : Int): AnyRef = {
     (field$ : @switch) match {
       case 0 =>
@@ -64,7 +66,7 @@ case class OptionsWithNullAsSecondType(
           map
         }.asInstanceOf[AnyRef]
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
   override def put(field$ : Int, value: Any): Unit = {
@@ -137,12 +139,12 @@ case class OptionsWithNullAsSecondType(
           }
         }
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
 }
 object OptionsWithNullAsSecondType {
-  val SCHEMA$ : org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(
+  val SCHEMA$ : Schema = new Schema.Parser().parse(
     "{\"type\":\"record\",\"name\":\"OptionsWithNullAsSecondType\",\"namespace\":\"avro2s.test.unions\",\"fields\":[{\"name\":\"_simple\",\"type\":[\"string\",\"null\"]},{\"name\":\"_optional_array\",\"type\":[{\"type\":\"array\",\"items\":\"boolean\"},\"null\"]},{\"name\":\"_array_of_options\",\"type\":{\"type\":\"array\",\"items\":[\"string\",\"null\"]}},{\"name\":\"_map_of_options\",\"type\":{\"type\":\"map\",\"values\":[\"string\",\"null\"]}}]}"
   )
 }

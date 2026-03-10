@@ -2,6 +2,8 @@
 
 package avro2s.test.logical
 import scala.annotation.switch
+import org.apache.avro.{AvroRuntimeException, Conversion, Schema}
+import org.apache.avro.specific.{SpecificData, SpecificRecordBase}
 case class LogicalTypes(
     var _uuid: java.util.UUID,
     var _date: java.time.LocalDate,
@@ -11,7 +13,7 @@ case class LogicalTypes(
     var _timestamp_micros: java.time.Instant,
     var _local_timestamp_millis: java.time.LocalDateTime,
     var _local_timestamp_micros: java.time.LocalDateTime
-) extends org.apache.avro.specific.SpecificRecordBase {
+) extends SpecificRecordBase {
   def this() = this(
     java.util.UUID.fromString("00000000-0000-0000-0000-000000000000"),
     java.time.LocalDate.ofEpochDay(0),
@@ -22,8 +24,8 @@ case class LogicalTypes(
     java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(0), java.time.ZoneId.of("UTC")),
     java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(0, 0), java.time.ZoneId.of("UTC"))
   )
-  override def getSchema: org.apache.avro.Schema = LogicalTypes.SCHEMA$
-  override def getSpecificData(): org.apache.avro.specific.SpecificData = LogicalTypes.MODEL$
+  override def getSchema: Schema = LogicalTypes.SCHEMA$
+  override def getSpecificData(): SpecificData = LogicalTypes.MODEL$
   override def get(field$ : Int): AnyRef = {
     (field$ : @switch) match {
       case 0 =>
@@ -43,7 +45,7 @@ case class LogicalTypes(
       case 7 =>
         _local_timestamp_micros.asInstanceOf[AnyRef]
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
   override def put(field$ : Int, value: Any): Unit = {
@@ -81,10 +83,10 @@ case class LogicalTypes(
           value.asInstanceOf[java.time.LocalDateTime]
         }
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
-  override def getConversion(field: Int): org.apache.avro.Conversion[_] = {
+  override def getConversion(field: Int): Conversion[_] = {
     (field: @switch) match {
       case 0 =>
         LogicalTypes._uuid$Conversion
@@ -108,11 +110,11 @@ case class LogicalTypes(
   }
 }
 object LogicalTypes {
-  val SCHEMA$ : org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(
+  val SCHEMA$ : Schema = new Schema.Parser().parse(
     "{\"type\":\"record\",\"name\":\"LogicalTypes\",\"namespace\":\"avro2s.test.logical\",\"fields\":[{\"name\":\"_uuid\",\"type\":{\"type\":\"string\",\"logicalType\":\"uuid\"}},{\"name\":\"_date\",\"type\":{\"type\":\"int\",\"logicalType\":\"date\"}},{\"name\":\"_time_millis\",\"type\":{\"type\":\"int\",\"logicalType\":\"time-millis\"}},{\"name\":\"_time_micros\",\"type\":{\"type\":\"long\",\"logicalType\":\"time-micros\"}},{\"name\":\"_timestamp_millis\",\"type\":{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}},{\"name\":\"_timestamp_micros\",\"type\":{\"type\":\"long\",\"logicalType\":\"timestamp-micros\"}},{\"name\":\"_local_timestamp_millis\",\"type\":{\"type\":\"long\",\"logicalType\":\"local-timestamp-millis\"}},{\"name\":\"_local_timestamp_micros\",\"type\":{\"type\":\"long\",\"logicalType\":\"local-timestamp-micros\"}}]}"
   )
-  val MODEL$ : org.apache.avro.specific.SpecificData = {
-    val model = new org.apache.avro.specific.SpecificData()
+  val MODEL$ : SpecificData = {
+    val model = new SpecificData()
     model.addLogicalTypeConversion(new org.apache.avro.Conversions.UUIDConversion())
     model.addLogicalTypeConversion(new org.apache.avro.data.TimeConversions.DateConversion())
     model.addLogicalTypeConversion(new org.apache.avro.data.TimeConversions.TimeMillisConversion())
@@ -123,12 +125,12 @@ object LogicalTypes {
     model.addLogicalTypeConversion(new org.apache.avro.data.TimeConversions.LocalTimestampMicrosConversion())
     model
   }
-  val _uuid$Conversion: org.apache.avro.Conversion[_] = new org.apache.avro.Conversions.UUIDConversion()
-  val _date$Conversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.DateConversion()
-  val _time_millis$Conversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.TimeMillisConversion()
-  val _time_micros$Conversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.TimeMicrosConversion()
-  val _timestamp_millis$Conversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.TimestampMillisConversion()
-  val _timestamp_micros$Conversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.TimestampMicrosConversion()
-  val _local_timestamp_millis$Conversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.LocalTimestampMillisConversion()
-  val _local_timestamp_micros$Conversion: org.apache.avro.Conversion[_] = new org.apache.avro.data.TimeConversions.LocalTimestampMicrosConversion()
+  val _uuid$Conversion: Conversion[_] = new org.apache.avro.Conversions.UUIDConversion()
+  val _date$Conversion: Conversion[_] = new org.apache.avro.data.TimeConversions.DateConversion()
+  val _time_millis$Conversion: Conversion[_] = new org.apache.avro.data.TimeConversions.TimeMillisConversion()
+  val _time_micros$Conversion: Conversion[_] = new org.apache.avro.data.TimeConversions.TimeMicrosConversion()
+  val _timestamp_millis$Conversion: Conversion[_] = new org.apache.avro.data.TimeConversions.TimestampMillisConversion()
+  val _timestamp_micros$Conversion: Conversion[_] = new org.apache.avro.data.TimeConversions.TimestampMicrosConversion()
+  val _local_timestamp_millis$Conversion: Conversion[_] = new org.apache.avro.data.TimeConversions.LocalTimestampMillisConversion()
+  val _local_timestamp_micros$Conversion: Conversion[_] = new org.apache.avro.data.TimeConversions.LocalTimestampMicrosConversion()
 }

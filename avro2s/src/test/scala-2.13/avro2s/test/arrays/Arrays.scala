@@ -2,7 +2,8 @@
 
 package avro2s.test.arrays
 import scala.annotation.switch
-import org.apache.avro.AvroRuntimeException
+import org.apache.avro.{AvroRuntimeException, Conversion, Schema}
+import org.apache.avro.specific.{SpecificData, SpecificRecordBase}
 import shapeless.{:+:, CNil, Coproduct, Inl, Inr}
 case class Arrays(
     var _array_of_arrays: List[List[String]],
@@ -22,7 +23,7 @@ case class Arrays(
     var _array_of_union_of_only_records: List[avro2s.test.arrays.RecordA :+: avro2s.test.arrays.RecordB :+: CNil],
     var _array_of_union_of_only_enums: List[avro2s.test.arrays.EnumA :+: avro2s.test.arrays.EnumB :+: CNil],
     var _array_of_union_of_only_fixed: List[avro2s.test.arrays.FixedA :+: avro2s.test.arrays.FixedB :+: CNil]
-) extends org.apache.avro.specific.SpecificRecordBase {
+) extends SpecificRecordBase {
   def this() = this(
     List.empty,
     List.empty,
@@ -42,7 +43,7 @@ case class Arrays(
     List.empty,
     List.empty
   )
-  override def getSchema: org.apache.avro.Schema = Arrays.SCHEMA$
+  override def getSchema: Schema = Arrays.SCHEMA$
   override def get(field$ : Int): AnyRef = {
     (field$ : @switch) match {
       case 0 =>
@@ -274,7 +275,7 @@ case class Arrays(
               .asJava
         }
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
   override def put(field$ : Int, value: Any): Unit = {
@@ -563,12 +564,12 @@ case class Arrays(
           }
         }
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
 }
 object Arrays {
-  val SCHEMA$ : org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(
+  val SCHEMA$ : Schema = new Schema.Parser().parse(
     "{\"type\":\"record\",\"name\":\"Arrays\",\"namespace\":\"avro2s.test.arrays\",\"fields\":[{\"name\":\"_array_of_arrays\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":\"string\",\"default\":[]},\"default\":[]}},{\"name\":\"_array_of_maps\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"map\",\"values\":\"string\",\"default\":{}},\"default\":[]}},{\"name\":\"_array_of_unions\",\"type\":{\"type\":\"array\",\"items\":[\"string\",\"int\"],\"default\":[]}},{\"name\":\"_array_of_records\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"Record\",\"fields\":[{\"name\":\"_string\",\"type\":\"string\"},{\"name\":\"_int\",\"type\":\"int\"}]},\"default\":[]}},{\"name\":\"_array_of_union_of_records\",\"type\":{\"type\":\"array\",\"items\":[{\"type\":\"record\",\"name\":\"Record1\",\"fields\":[{\"name\":\"_string\",\"type\":\"string\"},{\"name\":\"_int\",\"type\":\"int\"}]},{\"type\":\"record\",\"name\":\"Record2\",\"fields\":[{\"name\":\"_string\",\"type\":\"string\"},{\"name\":\"_int\",\"type\":\"int\"}]},\"int\"],\"default\":[]}},{\"name\":\"_array_of_enums\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"enum\",\"name\":\"Enum\",\"symbols\":[\"A\",\"B\",\"C\"]},\"default\":[]}},{\"name\":\"_array_of_fixed\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"fixed\",\"name\":\"Fixed\",\"size\":2},\"default\":[]}},{\"name\":\"_array_of_bytes\",\"type\":{\"type\":\"array\",\"items\":\"bytes\",\"default\":[]}},{\"name\":\"_array_of_strings\",\"type\":{\"type\":\"array\",\"items\":\"string\",\"default\":[]}},{\"name\":\"_array_of_ints\",\"type\":{\"type\":\"array\",\"items\":\"int\",\"default\":[]}},{\"name\":\"_array_of_longs\",\"type\":{\"type\":\"array\",\"items\":\"long\",\"default\":[]}},{\"name\":\"_array_of_floats\",\"type\":{\"type\":\"array\",\"items\":\"float\",\"default\":[]}},{\"name\":\"_array_of_doubles\",\"type\":{\"type\":\"array\",\"items\":\"double\",\"default\":[]}},{\"name\":\"_array_of_booleans\",\"type\":{\"type\":\"array\",\"items\":\"boolean\",\"default\":[]}},{\"name\":\"_array_of_union_of_only_records\",\"type\":{\"type\":\"array\",\"items\":[{\"type\":\"record\",\"name\":\"RecordA\",\"fields\":[{\"name\":\"_string\",\"type\":\"string\"}]},{\"type\":\"record\",\"name\":\"RecordB\",\"fields\":[{\"name\":\"_string\",\"type\":\"string\"}]}],\"default\":[]}},{\"name\":\"_array_of_union_of_only_enums\",\"type\":{\"type\":\"array\",\"items\":[{\"type\":\"enum\",\"name\":\"EnumA\",\"symbols\":[\"A\",\"B\",\"C\"]},{\"type\":\"enum\",\"name\":\"EnumB\",\"symbols\":[\"A\",\"B\",\"C\"]}],\"default\":[]}},{\"name\":\"_array_of_union_of_only_fixed\",\"type\":{\"type\":\"array\",\"items\":[{\"type\":\"fixed\",\"name\":\"FixedA\",\"size\":2},{\"type\":\"fixed\",\"name\":\"FixedB\",\"size\":2}],\"default\":[]}}]}"
   )
 }

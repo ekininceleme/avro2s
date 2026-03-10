@@ -2,13 +2,15 @@
 
 package avro2s.test.namespaces.explicit
 import scala.annotation.switch
+import org.apache.avro.{AvroRuntimeException, Conversion, Schema}
+import org.apache.avro.specific.{SpecificData, SpecificRecordBase}
 case class RecordWithExplicitNamespace(
     var _string: String,
     var _record_with_namespace_inherited_from_direct_parent: avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedFromDirectParent,
     var _array_of_records: List[avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaArray],
     var _map_of_records: Map[String, avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaMap],
     var _union_of_records: avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaUnion | String
-) extends org.apache.avro.specific.SpecificRecordBase {
+) extends SpecificRecordBase {
   def this() = this(
     "",
     new avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedFromDirectParent(),
@@ -16,7 +18,7 @@ case class RecordWithExplicitNamespace(
     Map.empty,
     new avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedViaUnion()
   )
-  override def getSchema: org.apache.avro.Schema = RecordWithExplicitNamespace.SCHEMA$
+  override def getSchema: Schema = RecordWithExplicitNamespace.SCHEMA$
   override def get(field$ : Int): AnyRef = {
     (field$ : @switch) match {
       case 0 =>
@@ -54,7 +56,7 @@ case class RecordWithExplicitNamespace(
             x.asInstanceOf[AnyRef]
         }
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
   override def put(field$ : Int, value: Any): Unit = {
@@ -103,12 +105,12 @@ case class RecordWithExplicitNamespace(
           }
         }
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
 }
 object RecordWithExplicitNamespace {
-  val SCHEMA$ : org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(
+  val SCHEMA$ : Schema = new Schema.Parser().parse(
     "{\"type\":\"record\",\"name\":\"RecordWithExplicitNamespace\",\"namespace\":\"avro2s.test.namespaces.explicit\",\"fields\":[{\"name\":\"_string\",\"type\":\"string\"},{\"name\":\"_record_with_namespace_inherited_from_direct_parent\",\"type\":{\"type\":\"record\",\"name\":\"RecordWithNamespaceInheritedFromDirectParent\",\"fields\":[{\"name\":\"_string\",\"type\":\"string\"},{\"name\":\"_record_with_namespace_inherited_from_indirect_non_top_level_parent\",\"type\":{\"type\":\"record\",\"name\":\"RecordWithNamespaceInheritedFromIndirectNonTopLevelParent\",\"fields\":[{\"name\":\"_string\",\"type\":\"string\"}]}}]}},{\"name\":\"_array_of_records\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"RecordWithNamespaceInheritedViaArray\",\"fields\":[{\"name\":\"_string\",\"type\":\"string\"}]}}},{\"name\":\"_map_of_records\",\"type\":{\"type\":\"map\",\"values\":{\"type\":\"record\",\"name\":\"RecordWithNamespaceInheritedViaMap\",\"fields\":[{\"name\":\"_string\",\"type\":\"string\"}]}}},{\"name\":\"_union_of_records\",\"type\":[{\"type\":\"record\",\"name\":\"RecordWithNamespaceInheritedViaUnion\",\"fields\":[{\"name\":\"_string\",\"type\":\"string\"}]},\"string\"]}]}"
   )
 }

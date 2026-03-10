@@ -2,7 +2,8 @@
 
 package avro2s.test.unions
 import scala.annotation.switch
-import org.apache.avro.AvroRuntimeException
+import org.apache.avro.{AvroRuntimeException, Conversion, Schema}
+import org.apache.avro.specific.{SpecificData, SpecificRecordBase}
 import shapeless.{:+:, CNil, Coproduct, Inl, Inr}
 case class Unions(
     var _union_of_map_of_union: String :+: Long :+: Boolean :+: Map[String, Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]] :+: scala.Null :+: CNil,
@@ -38,7 +39,7 @@ case class Unions(
     var _optional_array_of_array: Option[List[List[String]]],
     var _optional_map_of_union: Option[Map[String, String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]],
     var _optional_array_of_union: Option[List[String :+: Long :+: Boolean :+: Double :+: scala.Null :+: CNil]]
-) extends org.apache.avro.specific.SpecificRecordBase {
+) extends SpecificRecordBase {
   def this() = this(
     Inl(""),
     Inl(""),
@@ -74,7 +75,7 @@ case class Unions(
     None,
     None
   )
-  override def getSchema: org.apache.avro.Schema = Unions.SCHEMA$
+  override def getSchema: Schema = Unions.SCHEMA$
   override def get(field$ : Int): AnyRef = {
     (field$ : @switch) match {
       case 0 =>
@@ -600,7 +601,7 @@ case class Unions(
               .asInstanceOf[AnyRef]
         }
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
   override def put(field$ : Int, value: Any): Unit = {
@@ -1259,12 +1260,12 @@ case class Unions(
           }
         }
       case _ =>
-        throw new org.apache.avro.AvroRuntimeException("Bad index")
+        throw new AvroRuntimeException("Bad index")
     }
   }
 }
 object Unions {
-  val SCHEMA$ : org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(
+  val SCHEMA$ : Schema = new Schema.Parser().parse(
     "{\"type\":\"record\",\"name\":\"Unions\",\"namespace\":\"avro2s.test.unions\",\"fields\":[{\"name\":\"_union_of_map_of_union\",\"type\":[\"string\",\"long\",\"boolean\",{\"type\":\"map\",\"values\":{\"type\":\"map\",\"values\":[\"string\",\"long\",\"boolean\",\"double\",\"null\"]}},\"null\"]},{\"name\":\"_union_of_map_of_option\",\"type\":[\"string\",\"long\",\"boolean\",{\"type\":\"map\",\"values\":[\"null\",\"string\"]},\"null\"]},{\"name\":\"_union_of_array_of_option\",\"type\":[\"string\",\"long\",\"boolean\",{\"type\":\"array\",\"items\":[\"null\",\"string\"]},\"null\"]},{\"name\":\"_union_of_array_of_union\",\"type\":[\"string\",\"long\",\"boolean\",{\"type\":\"array\",\"items\":[\"string\",\"long\",\"boolean\",\"double\",\"bytes\",\"null\"]},\"null\"]},{\"name\":\"_union_of_array_of_array\",\"type\":[\"string\",\"long\",\"boolean\",{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":[\"string\",\"long\",\"boolean\",\"double\",\"null\"]}},\"null\"]},{\"name\":\"_union_of_records\",\"type\":[\"string\",\"long\",\"boolean\",{\"type\":\"record\",\"name\":\"Record1\",\"fields\":[{\"name\":\"field1\",\"type\":\"string\"}]},{\"type\":\"record\",\"name\":\"Record2\",\"fields\":[{\"name\":\"field2\",\"type\":\"long\"}]},\"null\"]},{\"name\":\"_union_of_enum\",\"type\":[\"string\",\"long\",\"boolean\",{\"type\":\"enum\",\"name\":\"Enum1\",\"symbols\":[\"sym1\",\"sym2\"]},\"null\"]},{\"name\":\"_union_of_fixed\",\"type\":[\"string\",\"long\",\"boolean\",{\"type\":\"fixed\",\"name\":\"Fixed1\",\"size\":1},\"null\"]},{\"name\":\"_union_of_string\",\"type\":[\"string\",\"long\",\"null\"]},{\"name\":\"_union_of_int\",\"type\":[\"int\",\"string\"]},{\"name\":\"_union_of_long\",\"type\":[\"long\",\"string\"]},{\"name\":\"_union_of_float\",\"type\":[\"float\",\"string\"]},{\"name\":\"_union_of_double\",\"type\":[\"double\",\"string\"]},{\"name\":\"_union_of_boolean\",\"type\":[\"boolean\",\"string\"]},{\"name\":\"_union_of_bytes\",\"type\":[\"bytes\",\"string\"]},{\"name\":\"_optional_record\",\"type\":[\"null\",{\"type\":\"record\",\"name\":\"Record3\",\"fields\":[{\"name\":\"field3\",\"type\":\"string\"}]}]},{\"name\":\"_optional_enum\",\"type\":[\"null\",{\"type\":\"enum\",\"name\":\"Enum2\",\"symbols\":[\"sym3\",\"sym4\"]}]},{\"name\":\"_optional_fixed\",\"type\":[\"null\",{\"type\":\"fixed\",\"name\":\"Fixed2\",\"size\":1}]},{\"name\":\"_optional_string\",\"type\":[\"null\",\"string\"]},{\"name\":\"_optional_int\",\"type\":[\"null\",\"int\"]},{\"name\":\"_optional_long\",\"type\":[\"null\",\"long\"]},{\"name\":\"_optional_float\",\"type\":[\"null\",\"float\"]},{\"name\":\"_optional_double\",\"type\":[\"null\",\"double\"]},{\"name\":\"_optional_boolean\",\"type\":[\"null\",\"boolean\"]},{\"name\":\"_optional_bytes\",\"type\":[\"null\",\"bytes\"]},{\"name\":\"_optional_map\",\"type\":[\"null\",{\"type\":\"map\",\"values\":\"string\"}]},{\"name\":\"_optional_array\",\"type\":[\"null\",{\"type\":\"array\",\"items\":\"string\"}]},{\"name\":\"_optional_map_of_array\",\"type\":[\"null\",{\"type\":\"map\",\"values\":{\"type\":\"array\",\"items\":\"string\"}}]},{\"name\":\"_optional_array_of_map\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"map\",\"values\":\"string\"}}]},{\"name\":\"_optional_map_of_map\",\"type\":[\"null\",{\"type\":\"map\",\"values\":{\"type\":\"map\",\"values\":\"string\"}}]},{\"name\":\"_optional_array_of_array\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":\"string\"}}]},{\"name\":\"_optional_map_of_union\",\"type\":[\"null\",{\"type\":\"map\",\"values\":[\"string\",\"long\",\"boolean\",\"double\",\"null\"]}]},{\"name\":\"_optional_array_of_union\",\"type\":[\"null\",{\"type\":\"array\",\"items\":[\"string\",\"long\",\"boolean\",\"double\",\"null\"]}]}]}"
   )
 }
