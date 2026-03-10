@@ -1,22 +1,20 @@
 /** GENERATED CODE */
 
 package avro2s.test.maps
-
-case class Fixed() extends org.apache.avro.specific.SpecificFixed {
-  override def getSchema: org.apache.avro.Schema = Fixed.SCHEMA$
+import org.apache.avro.Schema
+import org.apache.avro.specific.{SpecificData, SpecificDatumReader, SpecificDatumWriter, SpecificFixed}
+case class Fixed() extends SpecificFixed {
+  override def getSchema: Schema = Fixed.SCHEMA$
   override def readExternal(in: java.io.ObjectInput): Unit = {
-    avro2s.test.maps.Fixed.READER$.read(this, org.apache.avro.specific.SpecificData.getDecoder(in))
+    avro2s.test.maps.Fixed.READER$.read(this, SpecificData.getDecoder(in))
     ()
   }
-  override def writeExternal(out: java.io.ObjectOutput): Unit = {
-    avro2s.test.maps.Fixed.WRITER$.write(this, org.apache.avro.specific.SpecificData.getEncoder(out))
-  }
+  override def writeExternal(out: java.io.ObjectOutput): Unit = avro2s.test.maps.Fixed.WRITER$.write(this, SpecificData.getEncoder(out))
 }
-
 object Fixed {
-  val SCHEMA$ = new org.apache.avro.Schema.Parser().parse("""{"type":"fixed","name":"Fixed","namespace":"avro2s.test.maps","size":2}""")
-  val READER$ = new org.apache.avro.specific.SpecificDatumReader[Fixed](Fixed.SCHEMA$, Fixed.SCHEMA$, new org.apache.avro.specific.SpecificData())
-  val WRITER$ = new org.apache.avro.specific.SpecificDatumWriter[Fixed](Fixed.SCHEMA$, new org.apache.avro.specific.SpecificData())
+  val SCHEMA$ = new Schema.Parser().parse("{\"type\":\"fixed\",\"name\":\"Fixed\",\"namespace\":\"avro2s.test.maps\",\"size\":2}")
+  val READER$ = new SpecificDatumReader[Fixed](Fixed.SCHEMA$, Fixed.SCHEMA$, new SpecificData())
+  val WRITER$ = new SpecificDatumWriter[Fixed](Fixed.SCHEMA$, new SpecificData())
   def apply(data: Array[Byte]): Fixed = {
     val fixed = new avro2s.test.maps.Fixed()
     fixed.bytes(data)
