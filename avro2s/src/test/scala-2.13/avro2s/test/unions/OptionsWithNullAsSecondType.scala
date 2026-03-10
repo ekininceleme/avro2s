@@ -1,11 +1,17 @@
 /** GENERATED CODE */
+
 package avro2s.test.unions
 import scala.annotation.switch
-case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optional_array: Option[List[Boolean]], var _array_of_options: List[Option[String]], var _map_of_options: Map[String, Option[String]]) extends org.apache.avro.specific.SpecificRecordBase {
+case class OptionsWithNullAsSecondType(
+    var _simple: Option[String],
+    var _optional_array: Option[List[Boolean]],
+    var _array_of_options: List[Option[String]],
+    var _map_of_options: Map[String, Option[String]]
+) extends org.apache.avro.specific.SpecificRecordBase {
   def this() = this(None, None, List.empty, Map.empty)
   override def getSchema: org.apache.avro.Schema = OptionsWithNullAsSecondType.SCHEMA$
-  override def get(field$: Int): AnyRef = {
-    (field$: @switch) match {
+  override def get(field$ : Int): AnyRef = {
+    (field$ : @switch) match {
       case 0 =>
         _simple match {
           case None =>
@@ -18,22 +24,27 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
           case None =>
             null
           case Some(x) =>
-            scala.jdk.CollectionConverters.BufferHasAsJava({
-              x.map {
-                x => x.asInstanceOf[AnyRef]
-              }
-            }.toBuffer).asJava.asInstanceOf[AnyRef]
+            scala.jdk.CollectionConverters
+              .BufferHasAsJava({
+                x.map { x =>
+                  x.asInstanceOf[AnyRef]
+                }
+              }.toBuffer)
+              .asJava
+              .asInstanceOf[AnyRef]
         }
       case 2 =>
         _array_of_options match {
           case array =>
-            scala.jdk.CollectionConverters.BufferHasAsJava({
-              array.map {
-                case None => null
-                case Some(x) =>
-                  x.asInstanceOf[AnyRef]
-              }
-            }.toBuffer).asJava
+            scala.jdk.CollectionConverters
+              .BufferHasAsJava({
+                array.map {
+                  case None => null
+                  case Some(x) =>
+                    x.asInstanceOf[AnyRef]
+                }
+              }.toBuffer)
+              .asJava
         }
       case 3 =>
         {
@@ -56,8 +67,8 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
         throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
-  override def put(field$: Int, value: Any): Unit = {
-    (field$: @switch) match {
+  override def put(field$ : Int, value: Any): Unit = {
+    (field$ : @switch) match {
       case 0 =>
         this._simple = {
           value match {
@@ -76,9 +87,13 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
               Some({
                 x match {
                   case array: java.util.List[_] =>
-                    scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map {
-                      value => value.asInstanceOf[Boolean]
-                    }.toList
+                    scala.jdk.CollectionConverters
+                      .IteratorHasAsScala(array.iterator)
+                      .asScala
+                      .map { value =>
+                        value.asInstanceOf[Boolean]
+                      }
+                      .toList
                 }
               }.toList)
           }
@@ -87,14 +102,18 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
         this._array_of_options = {
           value match {
             case array: java.util.List[_] =>
-              scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map {
-                value => value match {
-                  case null =>
-                    None
-                  case x: org.apache.avro.util.Utf8 =>
-                    Some(x.toString)
+              scala.jdk.CollectionConverters
+                .IteratorHasAsScala(array.iterator)
+                .asScala
+                .map { value =>
+                  value match {
+                    case null =>
+                      None
+                    case x: org.apache.avro.util.Utf8 =>
+                      Some(x.toString)
+                  }
                 }
-              }.toList
+                .toList
           }
         }
       case 3 =>
@@ -104,14 +123,16 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
               scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
                 val key = kvp._1.toString
                 val value = kvp._2
-                (key, {
-                  value match {
-                    case null =>
-                      None
-                    case x: org.apache.avro.util.Utf8 =>
-                      Some(x.toString)
+                (
+                  key, {
+                    value match {
+                      case null =>
+                        None
+                      case x: org.apache.avro.util.Utf8 =>
+                        Some(x.toString)
+                    }
                   }
-                })
+                )
               }
           }
         }
@@ -121,5 +142,7 @@ case class OptionsWithNullAsSecondType(var _simple: Option[String], var _optiona
   }
 }
 object OptionsWithNullAsSecondType {
-  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"OptionsWithNullAsSecondType","namespace":"avro2s.test.unions","fields":[{"name":"_simple","type":["string","null"]},{"name":"_optional_array","type":[{"type":"array","items":"boolean"},"null"]},{"name":"_array_of_options","type":{"type":"array","items":["string","null"]}},{"name":"_map_of_options","type":{"type":"map","values":["string","null"]}}]}""")
+  val SCHEMA$ : org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(
+    "{\"type\":\"record\",\"name\":\"OptionsWithNullAsSecondType\",\"namespace\":\"avro2s.test.unions\",\"fields\":[{\"name\":\"_simple\",\"type\":[\"string\",\"null\"]},{\"name\":\"_optional_array\",\"type\":[{\"type\":\"array\",\"items\":\"boolean\"},\"null\"]},{\"name\":\"_array_of_options\",\"type\":{\"type\":\"array\",\"items\":[\"string\",\"null\"]}},{\"name\":\"_map_of_options\",\"type\":{\"type\":\"map\",\"values\":[\"string\",\"null\"]}}]}"
+  )
 }

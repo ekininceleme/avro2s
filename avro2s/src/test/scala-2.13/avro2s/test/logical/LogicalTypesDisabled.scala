@@ -1,11 +1,21 @@
 /** GENERATED CODE */
+
 package avro2s.test.logical
 import scala.annotation.switch
-case class LogicalTypesDisabled(var _uuid: String, var _date: Int, var _time_millis: Int, var _time_micros: Long, var _timestamp_millis: Long, var _timestamp_micros: Long, var _local_timestamp_millis: Long, var _local_timestamp_micros: Long) extends org.apache.avro.specific.SpecificRecordBase {
+case class LogicalTypesDisabled(
+    var _uuid: String,
+    var _date: Int,
+    var _time_millis: Int,
+    var _time_micros: Long,
+    var _timestamp_millis: Long,
+    var _timestamp_micros: Long,
+    var _local_timestamp_millis: Long,
+    var _local_timestamp_micros: Long
+) extends org.apache.avro.specific.SpecificRecordBase {
   def this() = this("", 0, 0, 0, 0, 0, 0, 0)
   override def getSchema: org.apache.avro.Schema = LogicalTypesDisabled.SCHEMA$
-  override def get(field$: Int): AnyRef = {
-    (field$: @switch) match {
+  override def get(field$ : Int): AnyRef = {
+    (field$ : @switch) match {
       case 0 =>
         _uuid.asInstanceOf[AnyRef]
       case 1 =>
@@ -26,8 +36,8 @@ case class LogicalTypesDisabled(var _uuid: String, var _date: Int, var _time_mil
         throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
-  override def put(field$: Int, value: Any): Unit = {
-    (field$: @switch) match {
+  override def put(field$ : Int, value: Any): Unit = {
+    (field$ : @switch) match {
       case 0 =>
         this._uuid = value.toString.asInstanceOf[String]
       case 1 =>
@@ -50,5 +60,7 @@ case class LogicalTypesDisabled(var _uuid: String, var _date: Int, var _time_mil
   }
 }
 object LogicalTypesDisabled {
-  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"LogicalTypesDisabled","namespace":"avro2s.test.logical","fields":[{"name":"_uuid","type":{"type":"string","logicalType":"uuid"}},{"name":"_date","type":{"type":"int","logicalType":"date"}},{"name":"_time_millis","type":{"type":"int","logicalType":"time-millis"}},{"name":"_time_micros","type":{"type":"long","logicalType":"time-micros"}},{"name":"_timestamp_millis","type":{"type":"long","logicalType":"timestamp-millis"}},{"name":"_timestamp_micros","type":{"type":"long","logicalType":"timestamp-micros"}},{"name":"_local_timestamp_millis","type":{"type":"long","logicalType":"local-timestamp-millis"}},{"name":"_local_timestamp_micros","type":{"type":"long","logicalType":"local-timestamp-micros"}}]}""")
+  val SCHEMA$ : org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(
+    "{\"type\":\"record\",\"name\":\"LogicalTypesDisabled\",\"namespace\":\"avro2s.test.logical\",\"fields\":[{\"name\":\"_uuid\",\"type\":{\"type\":\"string\",\"logicalType\":\"uuid\"}},{\"name\":\"_date\",\"type\":{\"type\":\"int\",\"logicalType\":\"date\"}},{\"name\":\"_time_millis\",\"type\":{\"type\":\"int\",\"logicalType\":\"time-millis\"}},{\"name\":\"_time_micros\",\"type\":{\"type\":\"long\",\"logicalType\":\"time-micros\"}},{\"name\":\"_timestamp_millis\",\"type\":{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}},{\"name\":\"_timestamp_micros\",\"type\":{\"type\":\"long\",\"logicalType\":\"timestamp-micros\"}},{\"name\":\"_local_timestamp_millis\",\"type\":{\"type\":\"long\",\"logicalType\":\"local-timestamp-millis\"}},{\"name\":\"_local_timestamp_micros\",\"type\":{\"type\":\"long\",\"logicalType\":\"local-timestamp-micros\"}}]}"
+  )
 }

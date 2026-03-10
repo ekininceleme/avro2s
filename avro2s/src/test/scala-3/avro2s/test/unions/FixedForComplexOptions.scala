@@ -1,4 +1,5 @@
 /** GENERATED CODE */
+
 package avro2s.test.unions
 case class FixedForComplexOptions() extends org.apache.avro.specific.SpecificFixed {
   override def getSchema: org.apache.avro.Schema = FixedForComplexOptions.SCHEMA$
@@ -11,7 +12,7 @@ case class FixedForComplexOptions() extends org.apache.avro.specific.SpecificFix
   }
 }
 object FixedForComplexOptions {
-  val SCHEMA$ = new org.apache.avro.Schema.Parser().parse("""{"type":"fixed","name":"FixedForComplexOptions","namespace":"avro2s.test.unions","size":16}""")
+  val SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"fixed\",\"name\":\"FixedForComplexOptions\",\"namespace\":\"avro2s.test.unions\",\"size\":16}")
   val READER$ = new org.apache.avro.specific.SpecificDatumReader[FixedForComplexOptions](FixedForComplexOptions.SCHEMA$, FixedForComplexOptions.SCHEMA$, new org.apache.avro.specific.SpecificData())
   val WRITER$ = new org.apache.avro.specific.SpecificDatumWriter[FixedForComplexOptions](FixedForComplexOptions.SCHEMA$, new org.apache.avro.specific.SpecificData())
   def apply(data: Array[Byte]): FixedForComplexOptions = {

@@ -1,11 +1,15 @@
 /** GENERATED CODE */
+
 package avro2s.test.namespaces.explicit
 import scala.annotation.switch
-case class RecordWithNamespaceInheritedFromDirectParent(var _string: String, var _record_with_namespace_inherited_from_indirect_non_top_level_parent: avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedFromIndirectNonTopLevelParent) extends org.apache.avro.specific.SpecificRecordBase {
+case class RecordWithNamespaceInheritedFromDirectParent(
+    var _string: String,
+    var _record_with_namespace_inherited_from_indirect_non_top_level_parent: avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedFromIndirectNonTopLevelParent
+) extends org.apache.avro.specific.SpecificRecordBase {
   def this() = this("", new avro2s.test.namespaces.explicit.RecordWithNamespaceInheritedFromIndirectNonTopLevelParent())
   override def getSchema: org.apache.avro.Schema = RecordWithNamespaceInheritedFromDirectParent.SCHEMA$
-  override def get(field$: Int): AnyRef = {
-    (field$: @switch) match {
+  override def get(field$ : Int): AnyRef = {
+    (field$ : @switch) match {
       case 0 =>
         _string.asInstanceOf[AnyRef]
       case 1 =>
@@ -14,8 +18,8 @@ case class RecordWithNamespaceInheritedFromDirectParent(var _string: String, var
         throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
-  override def put(field$: Int, value: Any): Unit = {
-    (field$: @switch) match {
+  override def put(field$ : Int, value: Any): Unit = {
+    (field$ : @switch) match {
       case 0 =>
         this._string = {
           value.toString.asInstanceOf[String]
@@ -30,5 +34,7 @@ case class RecordWithNamespaceInheritedFromDirectParent(var _string: String, var
   }
 }
 object RecordWithNamespaceInheritedFromDirectParent {
-  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"RecordWithNamespaceInheritedFromDirectParent","namespace":"avro2s.test.namespaces.explicit","fields":[{"name":"_string","type":"string"},{"name":"_record_with_namespace_inherited_from_indirect_non_top_level_parent","type":{"type":"record","name":"RecordWithNamespaceInheritedFromIndirectNonTopLevelParent","fields":[{"name":"_string","type":"string"}]}}]}""")
+  val SCHEMA$ : org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(
+    "{\"type\":\"record\",\"name\":\"RecordWithNamespaceInheritedFromDirectParent\",\"namespace\":\"avro2s.test.namespaces.explicit\",\"fields\":[{\"name\":\"_string\",\"type\":\"string\"},{\"name\":\"_record_with_namespace_inherited_from_indirect_non_top_level_parent\",\"type\":{\"type\":\"record\",\"name\":\"RecordWithNamespaceInheritedFromIndirectNonTopLevelParent\",\"fields\":[{\"name\":\"_string\",\"type\":\"string\"}]}}]}"
+  )
 }

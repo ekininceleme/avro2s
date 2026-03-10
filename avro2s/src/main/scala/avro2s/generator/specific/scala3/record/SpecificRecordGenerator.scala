@@ -26,9 +26,9 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
 
     val imports = List("scala.annotation.switch")
     val classDef = buildClass(name, fields, schema)
-    val objectStr = renderCompanionObject(name, fields, schema)
+    val objectDef = buildCompanionObject(name, fields, schema)
 
-    val code = AstBuilder.renderFileWithRawParts(ns, "/** GENERATED CODE */", imports, List(classDef), List(objectStr))
+    val code = AstBuilder.renderFile(ns, "/** GENERATED CODE */", imports, List(classDef, objectDef))
     GeneratedCode(s"${ns.map(_.replace(".", "/") + "/").getOrElse("") + name}.scala", code)
   }
 
@@ -115,32 +115,37 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
     )
   }
 
-  private def renderCompanionObject(name: String, fields: List[Schema.Field], schema: Schema): String = {
-    val stats = scala.collection.mutable.ListBuffer[String]()
+  private def buildCompanionObject(name: String, fields: List[Schema.Field], schema: Schema): Defn.Object = {
+    val stats = scala.collection.mutable.ListBuffer[Stat]()
 
-    stats += s"""  val SCHEMA$$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(\"\"\"${schema.toString}\"\"\")"""
+    val schemaJson = schema.toString.replace("\"", "\\\"")
+    stats += AstBuilder.parseStat(
+      s"""val SCHEMA$$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("$schemaJson")"""
+    )
 
     if (generatorConfig.logicalTypesEnabled) {
       val conversions = LogicalTypes.allConversionClasses
-      val addConversions = conversions.map(cls => s"    model.addLogicalTypeConversion(new $cls())").mkString("\n")
-      stats +=
-        s"""  val MODEL$$: org.apache.avro.specific.SpecificData = {
-           |    val model = new org.apache.avro.specific.SpecificData()
-           |$addConversions
-           |    model
-           |  }""".stripMargin
+      val addConversions = conversions.map(cls => s"model.addLogicalTypeConversion(new $cls())").mkString("\n    ")
+      stats += AstBuilder.parseStat(
+        s"""val MODEL$$: org.apache.avro.specific.SpecificData = {
+           |  val model = new org.apache.avro.specific.SpecificData()
+           |  $addConversions
+           |  model
+           |}""".stripMargin
+      )
     }
 
     fields.foreach { field =>
       ltc.getConversionClass(field.schema()) match {
         case Some(cls) =>
-          // Scala 3 uses [?] for wildcard type args, but [_] also works in this context
-          stats += s"  val ${field.safeName}$$Conversion: org.apache.avro.Conversion[_] = new $cls()"
+          stats += AstBuilder.parseStat(
+            s"val ${field.safeName}$$Conversion: org.apache.avro.Conversion[_] = new $cls()"
+          )
         case None => // skip
       }
     }
 
-    s"object $name {\n${stats.mkString("\n")}\n}"
+    AstBuilder.buildObject(name, stats.toList)
   }
 
   private def toThis(fields: List[Schema.Field]): String = {

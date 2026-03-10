@@ -1,11 +1,80 @@
 /** GENERATED CODE */
+
 package avro2s.test.unions
 import scala.annotation.switch
-case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | Map[String, Map[String, Option[String | Long | Boolean | Double]]]], var _union_of_map_of_option: Option[String | Long | Boolean | Map[String, Option[String]]], var _union_of_array_of_option: Option[String | Long | Boolean | List[Option[String]]], var _union_of_array_of_union: Option[String | Long | Boolean | List[Option[String | Long | Boolean | Double | Array[Byte]]]], var _union_of_array_of_array: Option[String | Long | Boolean | List[List[Option[String | Long | Boolean | Double]]]], var _union_of_records: Option[String | Long | Boolean | avro2s.test.unions.Record1 | avro2s.test.unions.Record2], var _union_of_enum: Option[String | Long | Boolean | avro2s.test.unions.Enum1], var _union_of_fixed: Option[String | Long | Boolean | avro2s.test.unions.Fixed1], var _union_of_string: Option[String | Long], var _union_of_int: Int | String, var _union_of_long: Long | String, var _union_of_float: Float | String, var _union_of_double: Double | String, var _union_of_boolean: Boolean | String, var _union_of_bytes: Array[Byte] | String, var _optional_record: Option[avro2s.test.unions.Record3], var _optional_enum: Option[avro2s.test.unions.Enum2], var _optional_fixed: Option[avro2s.test.unions.Fixed2], var _optional_string: Option[String], var _optional_int: Option[Int], var _optional_long: Option[Long], var _optional_float: Option[Float], var _optional_double: Option[Double], var _optional_boolean: Option[Boolean], var _optional_bytes: Option[Array[Byte]], var _optional_map: Option[Map[String, String]], var _optional_array: Option[List[String]], var _optional_map_of_array: Option[Map[String, List[String]]], var _optional_array_of_map: Option[List[Map[String, String]]], var _optional_map_of_map: Option[Map[String, Map[String, String]]], var _optional_array_of_array: Option[List[List[String]]], var _optional_map_of_union: Option[Map[String, Option[String | Long | Boolean | Double]]], var _optional_array_of_union: Option[List[Option[String | Long | Boolean | Double]]]) extends org.apache.avro.specific.SpecificRecordBase {
-  def this() = this(None, None, None, None, None, None, None, None, None, 0, 0, 0, 0, false, Array[Byte](), None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+case class Unions(
+    var _union_of_map_of_union: Option[String | Long | Boolean | Map[String, Map[String, Option[String | Long | Boolean | Double]]]],
+    var _union_of_map_of_option: Option[String | Long | Boolean | Map[String, Option[String]]],
+    var _union_of_array_of_option: Option[String | Long | Boolean | List[Option[String]]],
+    var _union_of_array_of_union: Option[String | Long | Boolean | List[Option[String | Long | Boolean | Double | Array[Byte]]]],
+    var _union_of_array_of_array: Option[String | Long | Boolean | List[List[Option[String | Long | Boolean | Double]]]],
+    var _union_of_records: Option[String | Long | Boolean | avro2s.test.unions.Record1 | avro2s.test.unions.Record2],
+    var _union_of_enum: Option[String | Long | Boolean | avro2s.test.unions.Enum1],
+    var _union_of_fixed: Option[String | Long | Boolean | avro2s.test.unions.Fixed1],
+    var _union_of_string: Option[String | Long],
+    var _union_of_int: Int | String,
+    var _union_of_long: Long | String,
+    var _union_of_float: Float | String,
+    var _union_of_double: Double | String,
+    var _union_of_boolean: Boolean | String,
+    var _union_of_bytes: Array[Byte] | String,
+    var _optional_record: Option[avro2s.test.unions.Record3],
+    var _optional_enum: Option[avro2s.test.unions.Enum2],
+    var _optional_fixed: Option[avro2s.test.unions.Fixed2],
+    var _optional_string: Option[String],
+    var _optional_int: Option[Int],
+    var _optional_long: Option[Long],
+    var _optional_float: Option[Float],
+    var _optional_double: Option[Double],
+    var _optional_boolean: Option[Boolean],
+    var _optional_bytes: Option[Array[Byte]],
+    var _optional_map: Option[Map[String, String]],
+    var _optional_array: Option[List[String]],
+    var _optional_map_of_array: Option[Map[String, List[String]]],
+    var _optional_array_of_map: Option[List[Map[String, String]]],
+    var _optional_map_of_map: Option[Map[String, Map[String, String]]],
+    var _optional_array_of_array: Option[List[List[String]]],
+    var _optional_map_of_union: Option[Map[String, Option[String | Long | Boolean | Double]]],
+    var _optional_array_of_union: Option[List[Option[String | Long | Boolean | Double]]]
+) extends org.apache.avro.specific.SpecificRecordBase {
+  def this() = this(
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    0,
+    0,
+    0,
+    0,
+    false,
+    Array[Byte](),
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None
+  )
   override def getSchema: org.apache.avro.Schema = Unions.SCHEMA$
-  override def get(field$: Int): AnyRef = {
-    (field$: @switch) match {
+  override def get(field$ : Int): AnyRef = {
+    (field$ : @switch) match {
       case 0 =>
         _union_of_map_of_union match {
           case Some(x: String) =>
@@ -81,14 +150,17 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
           case Some(x: Boolean) =>
             x.asInstanceOf[AnyRef]
           case Some(x: List[Option[String]]) =>
-            scala.jdk.CollectionConverters.BufferHasAsJava({
-              x.map {
-                case Some(x: String) =>
-                  x.asInstanceOf[AnyRef]
-                case None =>
-                  null.asInstanceOf[AnyRef]
-              }
-            }.toBuffer).asJava.asInstanceOf[AnyRef]
+            scala.jdk.CollectionConverters
+              .BufferHasAsJava({
+                x.map {
+                  case Some(x: String) =>
+                    x.asInstanceOf[AnyRef]
+                  case None =>
+                    null.asInstanceOf[AnyRef]
+                }
+              }.toBuffer)
+              .asJava
+              .asInstanceOf[AnyRef]
           case None =>
             null.asInstanceOf[AnyRef]
         }
@@ -101,22 +173,25 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
           case Some(x: Boolean) =>
             x.asInstanceOf[AnyRef]
           case Some(x: List[Option[String | Long | Boolean | Double | Array[Byte]]]) =>
-            scala.jdk.CollectionConverters.BufferHasAsJava({
-              x.map {
-                case Some(x: String) =>
-                  x.asInstanceOf[AnyRef]
-                case Some(x: Long) =>
-                  x.asInstanceOf[AnyRef]
-                case Some(x: Boolean) =>
-                  x.asInstanceOf[AnyRef]
-                case Some(x: Double) =>
-                  x.asInstanceOf[AnyRef]
-                case Some(x: Array[Byte]) =>
-                  java.nio.ByteBuffer.wrap(x).asInstanceOf[AnyRef]
-                case None =>
-                  null.asInstanceOf[AnyRef]
-              }
-            }.toBuffer).asJava.asInstanceOf[AnyRef]
+            scala.jdk.CollectionConverters
+              .BufferHasAsJava({
+                x.map {
+                  case Some(x: String) =>
+                    x.asInstanceOf[AnyRef]
+                  case Some(x: Long) =>
+                    x.asInstanceOf[AnyRef]
+                  case Some(x: Boolean) =>
+                    x.asInstanceOf[AnyRef]
+                  case Some(x: Double) =>
+                    x.asInstanceOf[AnyRef]
+                  case Some(x: Array[Byte]) =>
+                    java.nio.ByteBuffer.wrap(x).asInstanceOf[AnyRef]
+                  case None =>
+                    null.asInstanceOf[AnyRef]
+                }
+              }.toBuffer)
+              .asJava
+              .asInstanceOf[AnyRef]
           case None =>
             null.asInstanceOf[AnyRef]
         }
@@ -129,24 +204,30 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
           case Some(x: Boolean) =>
             x.asInstanceOf[AnyRef]
           case Some(x: List[List[Option[String | Long | Boolean | Double]]]) =>
-            scala.jdk.CollectionConverters.BufferHasAsJava({
-              x.map {
-                x => scala.jdk.CollectionConverters.BufferHasAsJava({
-                  x.map {
-                    case Some(x: String) =>
-                      x.asInstanceOf[AnyRef]
-                    case Some(x: Long) =>
-                      x.asInstanceOf[AnyRef]
-                    case Some(x: Boolean) =>
-                      x.asInstanceOf[AnyRef]
-                    case Some(x: Double) =>
-                      x.asInstanceOf[AnyRef]
-                    case None =>
-                      null.asInstanceOf[AnyRef]
-                  }
-                }.toBuffer).asJava.asInstanceOf[AnyRef]
-              }
-            }.toBuffer).asJava.asInstanceOf[AnyRef]
+            scala.jdk.CollectionConverters
+              .BufferHasAsJava({
+                x.map { x =>
+                  scala.jdk.CollectionConverters
+                    .BufferHasAsJava({
+                      x.map {
+                        case Some(x: String) =>
+                          x.asInstanceOf[AnyRef]
+                        case Some(x: Long) =>
+                          x.asInstanceOf[AnyRef]
+                        case Some(x: Boolean) =>
+                          x.asInstanceOf[AnyRef]
+                        case Some(x: Double) =>
+                          x.asInstanceOf[AnyRef]
+                        case None =>
+                          null.asInstanceOf[AnyRef]
+                      }
+                    }.toBuffer)
+                    .asJava
+                    .asInstanceOf[AnyRef]
+                }
+              }.toBuffer)
+              .asJava
+              .asInstanceOf[AnyRef]
           case None =>
             null.asInstanceOf[AnyRef]
         }
@@ -330,11 +411,14 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
       case 26 =>
         _optional_array match {
           case Some(x: List[String]) =>
-            scala.jdk.CollectionConverters.BufferHasAsJava({
-              x.map {
-                x => x.asInstanceOf[AnyRef]
-              }
-            }.toBuffer).asJava.asInstanceOf[AnyRef]
+            scala.jdk.CollectionConverters
+              .BufferHasAsJava({
+                x.map { x =>
+                  x.asInstanceOf[AnyRef]
+                }
+              }.toBuffer)
+              .asJava
+              .asInstanceOf[AnyRef]
           case None =>
             null.asInstanceOf[AnyRef]
         }
@@ -345,11 +429,13 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
             x.foreach { kvp =>
               val key = kvp._1
               val value = {
-                scala.jdk.CollectionConverters.BufferHasAsJava({
-                  kvp._2.map {
-                    x => x.asInstanceOf[AnyRef]
-                  }
-                }.toBuffer).asJava
+                scala.jdk.CollectionConverters
+                  .BufferHasAsJava({
+                    kvp._2.map { x =>
+                      x.asInstanceOf[AnyRef]
+                    }
+                  }.toBuffer)
+                  .asJava
               }
               map.put(key, value)
             }
@@ -360,19 +446,22 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
       case 28 =>
         _optional_array_of_map match {
           case Some(x: List[Map[String, String]]) =>
-            scala.jdk.CollectionConverters.BufferHasAsJava({
-              x.map { x =>
-                val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
-                x.foreach { kvp =>
-                  val key = kvp._1
-                  val value = {
-                    kvp._2.asInstanceOf[AnyRef]
+            scala.jdk.CollectionConverters
+              .BufferHasAsJava({
+                x.map { x =>
+                  val map: java.util.HashMap[String, Any] = new java.util.HashMap[String, Any]
+                  x.foreach { kvp =>
+                    val key = kvp._1
+                    val value = {
+                      kvp._2.asInstanceOf[AnyRef]
+                    }
+                    map.put(key, value)
                   }
-                  map.put(key, value)
+                  map
                 }
-                map
-              }
-            }.toBuffer).asJava.asInstanceOf[AnyRef]
+              }.toBuffer)
+              .asJava
+              .asInstanceOf[AnyRef]
           case None =>
             null.asInstanceOf[AnyRef]
         }
@@ -402,15 +491,21 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
       case 30 =>
         _optional_array_of_array match {
           case Some(x: List[List[String]]) =>
-            scala.jdk.CollectionConverters.BufferHasAsJava({
-              x.map {
-                x => scala.jdk.CollectionConverters.BufferHasAsJava({
-                  x.map {
-                    x => x.asInstanceOf[AnyRef]
-                  }
-                }.toBuffer).asJava.asInstanceOf[AnyRef]
-              }
-            }.toBuffer).asJava.asInstanceOf[AnyRef]
+            scala.jdk.CollectionConverters
+              .BufferHasAsJava({
+                x.map { x =>
+                  scala.jdk.CollectionConverters
+                    .BufferHasAsJava({
+                      x.map { x =>
+                        x.asInstanceOf[AnyRef]
+                      }
+                    }.toBuffer)
+                    .asJava
+                    .asInstanceOf[AnyRef]
+                }
+              }.toBuffer)
+              .asJava
+              .asInstanceOf[AnyRef]
           case None =>
             null.asInstanceOf[AnyRef]
         }
@@ -443,20 +538,23 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
       case 32 =>
         _optional_array_of_union match {
           case Some(x: List[Option[String | Long | Boolean | Double]]) =>
-            scala.jdk.CollectionConverters.BufferHasAsJava({
-              x.map {
-                case Some(x: String) =>
-                  x.asInstanceOf[AnyRef]
-                case Some(x: Long) =>
-                  x.asInstanceOf[AnyRef]
-                case Some(x: Boolean) =>
-                  x.asInstanceOf[AnyRef]
-                case Some(x: Double) =>
-                  x.asInstanceOf[AnyRef]
-                case None =>
-                  null.asInstanceOf[AnyRef]
-              }
-            }.toBuffer).asJava.asInstanceOf[AnyRef]
+            scala.jdk.CollectionConverters
+              .BufferHasAsJava({
+                x.map {
+                  case Some(x: String) =>
+                    x.asInstanceOf[AnyRef]
+                  case Some(x: Long) =>
+                    x.asInstanceOf[AnyRef]
+                  case Some(x: Boolean) =>
+                    x.asInstanceOf[AnyRef]
+                  case Some(x: Double) =>
+                    x.asInstanceOf[AnyRef]
+                  case None =>
+                    null.asInstanceOf[AnyRef]
+                }
+              }.toBuffer)
+              .asJava
+              .asInstanceOf[AnyRef]
           case None =>
             null.asInstanceOf[AnyRef]
         }
@@ -464,8 +562,8 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
         throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
-  override def put(field$: Int, value: Any): Unit = {
-    (field$: @switch) match {
+  override def put(field$ : Int, value: Any): Unit = {
+    (field$ : @switch) match {
       case 0 =>
         this._union_of_map_of_union = {
           value match {
@@ -479,29 +577,33 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
               Option(scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
                 val key = kvp._1.toString
                 val value = kvp._2
-                (key, {
-                  val map = value.asInstanceOf[java.util.Map[?, ?]]
-                  scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-                    val key = kvp._1.toString
-                    val value = kvp._2
-                    (key, {
-                      value match {
-                        case x: org.apache.avro.util.Utf8 =>
-                          Option(x.toString)
-                        case x: Long =>
-                          Option(x)
-                        case x: Boolean =>
-                          Option(x)
-                        case x: Double =>
-                          Option(x)
-                        case null =>
-                          None
-                        case _ =>
-                          throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
-                      }
-                    })
+                (
+                  key, {
+                    val map = value.asInstanceOf[java.util.Map[?, ?]]
+                    scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+                      val key = kvp._1.toString
+                      val value = kvp._2
+                      (
+                        key, {
+                          value match {
+                            case x: org.apache.avro.util.Utf8 =>
+                              Option(x.toString)
+                            case x: Long =>
+                              Option(x)
+                            case x: Boolean =>
+                              Option(x)
+                            case x: Double =>
+                              Option(x)
+                            case null =>
+                              None
+                            case _ =>
+                              throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                          }
+                        }
+                      )
+                    }
                   }
-                })
+                )
               })
             case null =>
               None
@@ -522,16 +624,18 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
               Option(scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
                 val key = kvp._1.toString
                 val value = kvp._2
-                (key, {
-                  value match {
-                    case null =>
-                      None
-                    case x: org.apache.avro.util.Utf8 =>
-                      Option(x.toString)
-                    case _ =>
-                      throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                (
+                  key, {
+                    value match {
+                      case null =>
+                        None
+                      case x: org.apache.avro.util.Utf8 =>
+                        Option(x.toString)
+                      case _ =>
+                        throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                    }
                   }
-                })
+                )
               })
             case null =>
               None
@@ -549,16 +653,22 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
             case x: Boolean =>
               Option(x)
             case array: java.util.List[?] =>
-              Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map {
-                value => value match {
-                  case null =>
-                    None
-                  case x: org.apache.avro.util.Utf8 =>
-                    Option(x.toString)
-                  case _ =>
-                    throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
-                }
-              }.toList)
+              Option(
+                scala.jdk.CollectionConverters
+                  .IteratorHasAsScala(array.iterator)
+                  .asScala
+                  .map { value =>
+                    value match {
+                      case null =>
+                        None
+                      case x: org.apache.avro.util.Utf8 =>
+                        Option(x.toString)
+                      case _ =>
+                        throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                    }
+                  }
+                  .toList
+              )
             case null =>
               None
             case _ =>
@@ -575,24 +685,30 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
             case x: Boolean =>
               Option(x)
             case array: java.util.List[?] =>
-              Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map {
-                value => value match {
-                  case x: org.apache.avro.util.Utf8 =>
-                    Option(x.toString)
-                  case x: Long =>
-                    Option(x)
-                  case x: Boolean =>
-                    Option(x)
-                  case x: Double =>
-                    Option(x)
-                  case x: java.nio.ByteBuffer =>
-                    Option(x.array())
-                  case null =>
-                    None
-                  case _ =>
-                    throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
-                }
-              }.toList)
+              Option(
+                scala.jdk.CollectionConverters
+                  .IteratorHasAsScala(array.iterator)
+                  .asScala
+                  .map { value =>
+                    value match {
+                      case x: org.apache.avro.util.Utf8 =>
+                        Option(x.toString)
+                      case x: Long =>
+                        Option(x)
+                      case x: Boolean =>
+                        Option(x)
+                      case x: Double =>
+                        Option(x)
+                      case x: java.nio.ByteBuffer =>
+                        Option(x.array())
+                      case null =>
+                        None
+                      case _ =>
+                        throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                    }
+                  }
+                  .toList
+              )
             case null =>
               None
             case _ =>
@@ -609,25 +725,35 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
             case x: Boolean =>
               Option(x)
             case array: java.util.List[?] =>
-              Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map { value =>
-                val array = value.asInstanceOf[java.util.List[?]]
-                scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map {
-                  value => value match {
-                    case x: org.apache.avro.util.Utf8 =>
-                      Option(x.toString)
-                    case x: Long =>
-                      Option(x)
-                    case x: Boolean =>
-                      Option(x)
-                    case x: Double =>
-                      Option(x)
-                    case null =>
-                      None
-                    case _ =>
-                      throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+              Option(
+                scala.jdk.CollectionConverters
+                  .IteratorHasAsScala(array.iterator)
+                  .asScala
+                  .map { value =>
+                    val array = value.asInstanceOf[java.util.List[?]]
+                    scala.jdk.CollectionConverters
+                      .IteratorHasAsScala(array.iterator)
+                      .asScala
+                      .map { value =>
+                        value match {
+                          case x: org.apache.avro.util.Utf8 =>
+                            Option(x.toString)
+                          case x: Long =>
+                            Option(x)
+                          case x: Boolean =>
+                            Option(x)
+                          case x: Double =>
+                            Option(x)
+                          case null =>
+                            None
+                          case _ =>
+                            throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                        }
+                      }
+                      .toList
                   }
-                }.toList
-              }.toList)
+                  .toList
+              )
             case null =>
               None
             case _ =>
@@ -885,9 +1011,11 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
               Option(scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
                 val key = kvp._1.toString
                 val value = kvp._2
-                (key, {
-                  value.toString
-                })
+                (
+                  key, {
+                    value.toString
+                  }
+                )
               })
             case _ =>
               throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
@@ -899,9 +1027,15 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
             case null =>
               None
             case array: java.util.List[?] =>
-              Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map {
-                value => value.toString
-              }.toList)
+              Option(
+                scala.jdk.CollectionConverters
+                  .IteratorHasAsScala(array.iterator)
+                  .asScala
+                  .map { value =>
+                    value.toString
+                  }
+                  .toList
+              )
             case _ =>
               throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
           }
@@ -915,12 +1049,18 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
               Option(scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
                 val key = kvp._1.toString
                 val value = kvp._2
-                (key, {
-                  val array = value.asInstanceOf[java.util.List[?]]
-                  scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map {
-                    value => value.toString
-                  }.toList
-                })
+                (
+                  key, {
+                    val array = value.asInstanceOf[java.util.List[?]]
+                    scala.jdk.CollectionConverters
+                      .IteratorHasAsScala(array.iterator)
+                      .asScala
+                      .map { value =>
+                        value.toString
+                      }
+                      .toList
+                  }
+                )
               })
             case _ =>
               throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
@@ -932,16 +1072,24 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
             case null =>
               None
             case array: java.util.List[?] =>
-              Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map { value =>
-                val map = value.asInstanceOf[java.util.Map[?, ?]]
-                scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-                  val key = kvp._1.toString
-                  val value = kvp._2
-                  (key, {
-                    value.toString
-                  })
-                }
-              }.toList)
+              Option(
+                scala.jdk.CollectionConverters
+                  .IteratorHasAsScala(array.iterator)
+                  .asScala
+                  .map { value =>
+                    val map = value.asInstanceOf[java.util.Map[?, ?]]
+                    scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+                      val key = kvp._1.toString
+                      val value = kvp._2
+                      (
+                        key, {
+                          value.toString
+                        }
+                      )
+                    }
+                  }
+                  .toList
+              )
             case _ =>
               throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
           }
@@ -955,16 +1103,20 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
               Option(scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
                 val key = kvp._1.toString
                 val value = kvp._2
-                (key, {
-                  val map = value.asInstanceOf[java.util.Map[?, ?]]
-                  scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
-                    val key = kvp._1.toString
-                    val value = kvp._2
-                    (key, {
-                      value.toString
-                    })
+                (
+                  key, {
+                    val map = value.asInstanceOf[java.util.Map[?, ?]]
+                    scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
+                      val key = kvp._1.toString
+                      val value = kvp._2
+                      (
+                        key, {
+                          value.toString
+                        }
+                      )
+                    }
                   }
-                })
+                )
               })
             case _ =>
               throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
@@ -976,12 +1128,22 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
             case null =>
               None
             case array: java.util.List[?] =>
-              Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map { value =>
-                val array = value.asInstanceOf[java.util.List[?]]
-                scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map {
-                  value => value.toString
-                }.toList
-              }.toList)
+              Option(
+                scala.jdk.CollectionConverters
+                  .IteratorHasAsScala(array.iterator)
+                  .asScala
+                  .map { value =>
+                    val array = value.asInstanceOf[java.util.List[?]]
+                    scala.jdk.CollectionConverters
+                      .IteratorHasAsScala(array.iterator)
+                      .asScala
+                      .map { value =>
+                        value.toString
+                      }
+                      .toList
+                  }
+                  .toList
+              )
             case _ =>
               throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
           }
@@ -995,22 +1157,24 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
               Option(scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
                 val key = kvp._1.toString
                 val value = kvp._2
-                (key, {
-                  value match {
-                    case x: org.apache.avro.util.Utf8 =>
-                      Option(x.toString)
-                    case x: Long =>
-                      Option(x)
-                    case x: Boolean =>
-                      Option(x)
-                    case x: Double =>
-                      Option(x)
-                    case null =>
-                      None
-                    case _ =>
-                      throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                (
+                  key, {
+                    value match {
+                      case x: org.apache.avro.util.Utf8 =>
+                        Option(x.toString)
+                      case x: Long =>
+                        Option(x)
+                      case x: Boolean =>
+                        Option(x)
+                      case x: Double =>
+                        Option(x)
+                      case null =>
+                        None
+                      case _ =>
+                        throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                    }
                   }
-                })
+                )
               })
             case _ =>
               throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
@@ -1022,22 +1186,28 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
             case null =>
               None
             case array: java.util.List[?] =>
-              Option(scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map {
-                value => value match {
-                  case x: org.apache.avro.util.Utf8 =>
-                    Option(x.toString)
-                  case x: Long =>
-                    Option(x)
-                  case x: Boolean =>
-                    Option(x)
-                  case x: Double =>
-                    Option(x)
-                  case null =>
-                    None
-                  case _ =>
-                    throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
-                }
-              }.toList)
+              Option(
+                scala.jdk.CollectionConverters
+                  .IteratorHasAsScala(array.iterator)
+                  .asScala
+                  .map { value =>
+                    value match {
+                      case x: org.apache.avro.util.Utf8 =>
+                        Option(x.toString)
+                      case x: Long =>
+                        Option(x)
+                      case x: Boolean =>
+                        Option(x)
+                      case x: Double =>
+                        Option(x)
+                      case null =>
+                        None
+                      case _ =>
+                        throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
+                    }
+                  }
+                  .toList
+              )
             case _ =>
               throw new org.apache.avro.AvroRuntimeException("Unexpected type: " + value.getClass.getName)
           }
@@ -1048,5 +1218,7 @@ case class Unions(var _union_of_map_of_union: Option[String | Long | Boolean | M
   }
 }
 object Unions {
-  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"Unions","namespace":"avro2s.test.unions","fields":[{"name":"_union_of_map_of_union","type":["string","long","boolean",{"type":"map","values":{"type":"map","values":["string","long","boolean","double","null"]}},"null"]},{"name":"_union_of_map_of_option","type":["string","long","boolean",{"type":"map","values":["null","string"]},"null"]},{"name":"_union_of_array_of_option","type":["string","long","boolean",{"type":"array","items":["null","string"]},"null"]},{"name":"_union_of_array_of_union","type":["string","long","boolean",{"type":"array","items":["string","long","boolean","double","bytes","null"]},"null"]},{"name":"_union_of_array_of_array","type":["string","long","boolean",{"type":"array","items":{"type":"array","items":["string","long","boolean","double","null"]}},"null"]},{"name":"_union_of_records","type":["string","long","boolean",{"type":"record","name":"Record1","fields":[{"name":"field1","type":"string"}]},{"type":"record","name":"Record2","fields":[{"name":"field2","type":"long"}]},"null"]},{"name":"_union_of_enum","type":["string","long","boolean",{"type":"enum","name":"Enum1","symbols":["sym1","sym2"]},"null"]},{"name":"_union_of_fixed","type":["string","long","boolean",{"type":"fixed","name":"Fixed1","size":1},"null"]},{"name":"_union_of_string","type":["string","long","null"]},{"name":"_union_of_int","type":["int","string"]},{"name":"_union_of_long","type":["long","string"]},{"name":"_union_of_float","type":["float","string"]},{"name":"_union_of_double","type":["double","string"]},{"name":"_union_of_boolean","type":["boolean","string"]},{"name":"_union_of_bytes","type":["bytes","string"]},{"name":"_optional_record","type":["null",{"type":"record","name":"Record3","fields":[{"name":"field3","type":"string"}]}]},{"name":"_optional_enum","type":["null",{"type":"enum","name":"Enum2","symbols":["sym3","sym4"]}]},{"name":"_optional_fixed","type":["null",{"type":"fixed","name":"Fixed2","size":1}]},{"name":"_optional_string","type":["null","string"]},{"name":"_optional_int","type":["null","int"]},{"name":"_optional_long","type":["null","long"]},{"name":"_optional_float","type":["null","float"]},{"name":"_optional_double","type":["null","double"]},{"name":"_optional_boolean","type":["null","boolean"]},{"name":"_optional_bytes","type":["null","bytes"]},{"name":"_optional_map","type":["null",{"type":"map","values":"string"}]},{"name":"_optional_array","type":["null",{"type":"array","items":"string"}]},{"name":"_optional_map_of_array","type":["null",{"type":"map","values":{"type":"array","items":"string"}}]},{"name":"_optional_array_of_map","type":["null",{"type":"array","items":{"type":"map","values":"string"}}]},{"name":"_optional_map_of_map","type":["null",{"type":"map","values":{"type":"map","values":"string"}}]},{"name":"_optional_array_of_array","type":["null",{"type":"array","items":{"type":"array","items":"string"}}]},{"name":"_optional_map_of_union","type":["null",{"type":"map","values":["string","long","boolean","double","null"]}]},{"name":"_optional_array_of_union","type":["null",{"type":"array","items":["string","long","boolean","double","null"]}]}]}""")
+  val SCHEMA$ : org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(
+    "{\"type\":\"record\",\"name\":\"Unions\",\"namespace\":\"avro2s.test.unions\",\"fields\":[{\"name\":\"_union_of_map_of_union\",\"type\":[\"string\",\"long\",\"boolean\",{\"type\":\"map\",\"values\":{\"type\":\"map\",\"values\":[\"string\",\"long\",\"boolean\",\"double\",\"null\"]}},\"null\"]},{\"name\":\"_union_of_map_of_option\",\"type\":[\"string\",\"long\",\"boolean\",{\"type\":\"map\",\"values\":[\"null\",\"string\"]},\"null\"]},{\"name\":\"_union_of_array_of_option\",\"type\":[\"string\",\"long\",\"boolean\",{\"type\":\"array\",\"items\":[\"null\",\"string\"]},\"null\"]},{\"name\":\"_union_of_array_of_union\",\"type\":[\"string\",\"long\",\"boolean\",{\"type\":\"array\",\"items\":[\"string\",\"long\",\"boolean\",\"double\",\"bytes\",\"null\"]},\"null\"]},{\"name\":\"_union_of_array_of_array\",\"type\":[\"string\",\"long\",\"boolean\",{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":[\"string\",\"long\",\"boolean\",\"double\",\"null\"]}},\"null\"]},{\"name\":\"_union_of_records\",\"type\":[\"string\",\"long\",\"boolean\",{\"type\":\"record\",\"name\":\"Record1\",\"fields\":[{\"name\":\"field1\",\"type\":\"string\"}]},{\"type\":\"record\",\"name\":\"Record2\",\"fields\":[{\"name\":\"field2\",\"type\":\"long\"}]},\"null\"]},{\"name\":\"_union_of_enum\",\"type\":[\"string\",\"long\",\"boolean\",{\"type\":\"enum\",\"name\":\"Enum1\",\"symbols\":[\"sym1\",\"sym2\"]},\"null\"]},{\"name\":\"_union_of_fixed\",\"type\":[\"string\",\"long\",\"boolean\",{\"type\":\"fixed\",\"name\":\"Fixed1\",\"size\":1},\"null\"]},{\"name\":\"_union_of_string\",\"type\":[\"string\",\"long\",\"null\"]},{\"name\":\"_union_of_int\",\"type\":[\"int\",\"string\"]},{\"name\":\"_union_of_long\",\"type\":[\"long\",\"string\"]},{\"name\":\"_union_of_float\",\"type\":[\"float\",\"string\"]},{\"name\":\"_union_of_double\",\"type\":[\"double\",\"string\"]},{\"name\":\"_union_of_boolean\",\"type\":[\"boolean\",\"string\"]},{\"name\":\"_union_of_bytes\",\"type\":[\"bytes\",\"string\"]},{\"name\":\"_optional_record\",\"type\":[\"null\",{\"type\":\"record\",\"name\":\"Record3\",\"fields\":[{\"name\":\"field3\",\"type\":\"string\"}]}]},{\"name\":\"_optional_enum\",\"type\":[\"null\",{\"type\":\"enum\",\"name\":\"Enum2\",\"symbols\":[\"sym3\",\"sym4\"]}]},{\"name\":\"_optional_fixed\",\"type\":[\"null\",{\"type\":\"fixed\",\"name\":\"Fixed2\",\"size\":1}]},{\"name\":\"_optional_string\",\"type\":[\"null\",\"string\"]},{\"name\":\"_optional_int\",\"type\":[\"null\",\"int\"]},{\"name\":\"_optional_long\",\"type\":[\"null\",\"long\"]},{\"name\":\"_optional_float\",\"type\":[\"null\",\"float\"]},{\"name\":\"_optional_double\",\"type\":[\"null\",\"double\"]},{\"name\":\"_optional_boolean\",\"type\":[\"null\",\"boolean\"]},{\"name\":\"_optional_bytes\",\"type\":[\"null\",\"bytes\"]},{\"name\":\"_optional_map\",\"type\":[\"null\",{\"type\":\"map\",\"values\":\"string\"}]},{\"name\":\"_optional_array\",\"type\":[\"null\",{\"type\":\"array\",\"items\":\"string\"}]},{\"name\":\"_optional_map_of_array\",\"type\":[\"null\",{\"type\":\"map\",\"values\":{\"type\":\"array\",\"items\":\"string\"}}]},{\"name\":\"_optional_array_of_map\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"map\",\"values\":\"string\"}}]},{\"name\":\"_optional_map_of_map\",\"type\":[\"null\",{\"type\":\"map\",\"values\":{\"type\":\"map\",\"values\":\"string\"}}]},{\"name\":\"_optional_array_of_array\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":\"string\"}}]},{\"name\":\"_optional_map_of_union\",\"type\":[\"null\",{\"type\":\"map\",\"values\":[\"string\",\"long\",\"boolean\",\"double\",\"null\"]}]},{\"name\":\"_optional_array_of_union\",\"type\":[\"null\",{\"type\":\"array\",\"items\":[\"string\",\"long\",\"boolean\",\"double\",\"null\"]}]}]}"
+  )
 }

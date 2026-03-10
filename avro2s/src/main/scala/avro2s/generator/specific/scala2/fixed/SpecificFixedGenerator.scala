@@ -2,6 +2,8 @@ package avro2s.generator.specific.scala2.fixed
 
 import avro2s.generator.{AstBuilder, GeneratedCode}
 
+import scala.meta._
+
 private[avro2s] object SpecificFixedGenerator {
 
   def schemaToScala2Fixed(schema: org.apache.avro.Schema, namespace: Option[String]): GeneratedCode = {
@@ -22,20 +24,21 @@ private[avro2s] object SpecificFixedGenerator {
          |}""".stripMargin
     )
 
-    // Render companion object as raw string to preserve triple-quoted schema string
-    val objectStr =
-      s"""object $name {
-         |  val SCHEMA$$ = new org.apache.avro.Schema.Parser().parse(\"\"\"${schema.toString}\"\"\")
-         |  val READER$$ = new org.apache.avro.specific.SpecificDatumReader[$name]($name.SCHEMA$$, $name.SCHEMA$$, new org.apache.avro.specific.SpecificData())
-         |  val WRITER$$ = new org.apache.avro.specific.SpecificDatumWriter[$name]($name.SCHEMA$$, new org.apache.avro.specific.SpecificData())
-         |  def apply(data: Array[Byte]): $name = {
-         |    val fixed = new $nsPrefix$name()
-         |    fixed.bytes(data)
-         |    fixed
-         |  }
-         |}""".stripMargin
+    val schemaJson = schema.toString.replace("\"", "\\\"")
+    val objectDef = AstBuilder.buildObject(name, List(
+      AstBuilder.parseStat(s"""val SCHEMA$$ = new org.apache.avro.Schema.Parser().parse("$schemaJson")"""),
+      AstBuilder.parseStat(s"""val READER$$ = new org.apache.avro.specific.SpecificDatumReader[$name]($name.SCHEMA$$, $name.SCHEMA$$, new org.apache.avro.specific.SpecificData())"""),
+      AstBuilder.parseStat(s"""val WRITER$$ = new org.apache.avro.specific.SpecificDatumWriter[$name]($name.SCHEMA$$, new org.apache.avro.specific.SpecificData())"""),
+      AstBuilder.parseStat(
+        s"""def apply(data: Array[Byte]): $name = {
+           |  val fixed = new $nsPrefix$name()
+           |  fixed.bytes(data)
+           |  fixed
+           |}""".stripMargin
+      )
+    ))
 
-    val code = AstBuilder.renderFileWithRawParts(ns, "/** GENERATED CODE */", Nil, List(classDef), List(objectStr))
+    val code = AstBuilder.renderFile(ns, "/** GENERATED CODE */", Nil, List(classDef, objectDef))
     GeneratedCode(s"${ns.map(_.replace(".", "/") + "/").getOrElse("") + name}.scala", code)
   }
 }

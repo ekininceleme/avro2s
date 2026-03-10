@@ -1,19 +1,20 @@
 /** GENERATED CODE */
+
 package avro2s.test.unions
 import scala.annotation.switch
 case class Record1(var field1: String) extends org.apache.avro.specific.SpecificRecordBase {
   def this() = this("")
   override def getSchema: org.apache.avro.Schema = Record1.SCHEMA$
-  override def get(field$: Int): AnyRef = {
-    (field$: @switch) match {
+  override def get(field$ : Int): AnyRef = {
+    (field$ : @switch) match {
       case 0 =>
         field1.asInstanceOf[AnyRef]
       case _ =>
         throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
-  override def put(field$: Int, value: Any): Unit = {
-    (field$: @switch) match {
+  override def put(field$ : Int, value: Any): Unit = {
+    (field$ : @switch) match {
       case 0 =>
         this.field1 = {
           value.toString.asInstanceOf[String]
@@ -24,5 +25,6 @@ case class Record1(var field1: String) extends org.apache.avro.specific.Specific
   }
 }
 object Record1 {
-  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"Record1","namespace":"avro2s.test.unions","fields":[{"name":"field1","type":"string"}]}""")
+  val SCHEMA$ : org.apache.avro.Schema =
+    new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Record1\",\"namespace\":\"avro2s.test.unions\",\"fields\":[{\"name\":\"field1\",\"type\":\"string\"}]}")
 }

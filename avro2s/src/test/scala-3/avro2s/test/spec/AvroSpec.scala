@@ -1,11 +1,27 @@
 /** GENERATED CODE */
+
 package avro2s.test.spec
 import scala.annotation.switch
-case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int, var _long: Long, var _float: Float, var _double: Double, var _bytes: Array[Byte], var _string: String, var _enum: avro2s.test.spec.Suit, var _array: List[String], var _map: Map[String, Long], var _union_nullable: Option[String], var _union_other: String | Int, var _fixed: avro2s.test.spec.md5) extends org.apache.avro.specific.SpecificRecordBase {
+case class AvroSpec(
+    var _null: scala.Null,
+    var _boolean: Boolean,
+    var _int: Int,
+    var _long: Long,
+    var _float: Float,
+    var _double: Double,
+    var _bytes: Array[Byte],
+    var _string: String,
+    var _enum: avro2s.test.spec.Suit,
+    var _array: List[String],
+    var _map: Map[String, Long],
+    var _union_nullable: Option[String],
+    var _union_other: String | Int,
+    var _fixed: avro2s.test.spec.md5
+) extends org.apache.avro.specific.SpecificRecordBase {
   def this() = this(null, false, 0, 0, 0, 0, Array[Byte](), "", null, List.empty, Map.empty, None, "", new avro2s.test.spec.md5())
   override def getSchema: org.apache.avro.Schema = AvroSpec.SCHEMA$
-  override def get(field$: Int): AnyRef = {
-    (field$: @switch) match {
+  override def get(field$ : Int): AnyRef = {
+    (field$ : @switch) match {
       case 0 =>
         _null.asInstanceOf[AnyRef]
       case 1 =>
@@ -27,11 +43,13 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
       case 9 =>
         _array match {
           case array =>
-            scala.jdk.CollectionConverters.BufferHasAsJava({
-              array.map {
-                x => x.asInstanceOf[AnyRef]
-              }
-            }.toBuffer).asJava
+            scala.jdk.CollectionConverters
+              .BufferHasAsJava({
+                array.map { x =>
+                  x.asInstanceOf[AnyRef]
+                }
+              }.toBuffer)
+              .asJava
         }
       case 10 =>
         {
@@ -65,8 +83,8 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
         throw new org.apache.avro.AvroRuntimeException("Bad index")
     }
   }
-  override def put(field$: Int, value: Any): Unit = {
-    (field$: @switch) match {
+  override def put(field$ : Int, value: Any): Unit = {
+    (field$ : @switch) match {
       case 0 =>
         this._null = {
           value.asInstanceOf[scala.Null]
@@ -109,9 +127,13 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
       case 9 =>
         this._array = {
           val array = value.asInstanceOf[java.util.List[?]]
-          scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map {
-            value => value.toString
-          }.toList
+          scala.jdk.CollectionConverters
+            .IteratorHasAsScala(array.iterator)
+            .asScala
+            .map { value =>
+              value.toString
+            }
+            .toList
         }
       case 10 =>
         this._map = {
@@ -119,9 +141,11 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
           scala.jdk.CollectionConverters.MapHasAsScala(map).asScala.toMap map { kvp =>
             val key = kvp._1.toString
             val value = kvp._2
-            (key, {
-              value.asInstanceOf[Long]
-            })
+            (
+              key, {
+                value.asInstanceOf[Long]
+              }
+            )
           }
         }
       case 11 =>
@@ -156,5 +180,7 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
   }
 }
 object AvroSpec {
-  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"AvroSpec","namespace":"avro2s.test.spec","fields":[{"name":"_null","type":"null"},{"name":"_boolean","type":"boolean"},{"name":"_int","type":"int"},{"name":"_long","type":"long"},{"name":"_float","type":"float"},{"name":"_double","type":"double"},{"name":"_bytes","type":"bytes"},{"name":"_string","type":"string"},{"name":"_enum","type":{"type":"enum","name":"Suit","symbols":["SPADES","HEARTS","DIAMONDS","CLUBS"]}},{"name":"_array","type":{"type":"array","items":"string","default":[]}},{"name":"_map","type":{"type":"map","values":"long","default":{}}},{"name":"_union_nullable","type":["null","string"],"default":null},{"name":"_union_other","type":["string","int"]},{"name":"_fixed","type":{"type":"fixed","name":"md5","size":16}}]}""")
+  val SCHEMA$ : org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(
+    "{\"type\":\"record\",\"name\":\"AvroSpec\",\"namespace\":\"avro2s.test.spec\",\"fields\":[{\"name\":\"_null\",\"type\":\"null\"},{\"name\":\"_boolean\",\"type\":\"boolean\"},{\"name\":\"_int\",\"type\":\"int\"},{\"name\":\"_long\",\"type\":\"long\"},{\"name\":\"_float\",\"type\":\"float\"},{\"name\":\"_double\",\"type\":\"double\"},{\"name\":\"_bytes\",\"type\":\"bytes\"},{\"name\":\"_string\",\"type\":\"string\"},{\"name\":\"_enum\",\"type\":{\"type\":\"enum\",\"name\":\"Suit\",\"symbols\":[\"SPADES\",\"HEARTS\",\"DIAMONDS\",\"CLUBS\"]}},{\"name\":\"_array\",\"type\":{\"type\":\"array\",\"items\":\"string\",\"default\":[]}},{\"name\":\"_map\",\"type\":{\"type\":\"map\",\"values\":\"long\",\"default\":{}}},{\"name\":\"_union_nullable\",\"type\":[\"null\",\"string\"],\"default\":null},{\"name\":\"_union_other\",\"type\":[\"string\",\"int\"]},{\"name\":\"_fixed\",\"type\":{\"type\":\"fixed\",\"name\":\"md5\",\"size\":16}}]}"
+  )
 }

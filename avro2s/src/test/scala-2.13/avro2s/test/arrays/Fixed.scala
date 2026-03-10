@@ -1,4 +1,5 @@
 /** GENERATED CODE */
+
 package avro2s.test.arrays
 case class Fixed() extends org.apache.avro.specific.SpecificFixed {
   override def getSchema: org.apache.avro.Schema = Fixed.SCHEMA$
@@ -11,7 +12,7 @@ case class Fixed() extends org.apache.avro.specific.SpecificFixed {
   }
 }
 object Fixed {
-  val SCHEMA$ = new org.apache.avro.Schema.Parser().parse("""{"type":"fixed","name":"Fixed","namespace":"avro2s.test.arrays","size":2}""")
+  val SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"fixed\",\"name\":\"Fixed\",\"namespace\":\"avro2s.test.arrays\",\"size\":2}")
   val READER$ = new org.apache.avro.specific.SpecificDatumReader[Fixed](Fixed.SCHEMA$, Fixed.SCHEMA$, new org.apache.avro.specific.SpecificData())
   val WRITER$ = new org.apache.avro.specific.SpecificDatumWriter[Fixed](Fixed.SCHEMA$, new org.apache.avro.specific.SpecificData())
   def apply(data: Array[Byte]): Fixed = {
