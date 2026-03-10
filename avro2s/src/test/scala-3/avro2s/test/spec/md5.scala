@@ -7,9 +7,7 @@ case class md5() extends org.apache.avro.specific.SpecificFixed {
     avro2s.test.spec.md5.READER$.read(this, org.apache.avro.specific.SpecificData.getDecoder(in))
     ()
   }
-  override def writeExternal(out: java.io.ObjectOutput): Unit = {
-    avro2s.test.spec.md5.WRITER$.write(this, org.apache.avro.specific.SpecificData.getEncoder(out))
-  }
+  override def writeExternal(out: java.io.ObjectOutput): Unit = avro2s.test.spec.md5.WRITER$.write(this, org.apache.avro.specific.SpecificData.getEncoder(out))
 }
 object md5 {
   val SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"fixed\",\"name\":\"md5\",\"namespace\":\"avro2s.test.spec\",\"size\":16}")

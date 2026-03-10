@@ -7,9 +7,7 @@ case class Fixed() extends org.apache.avro.specific.SpecificFixed {
     avro2s.test.arrays.Fixed.READER$.read(this, org.apache.avro.specific.SpecificData.getDecoder(in))
     ()
   }
-  override def writeExternal(out: java.io.ObjectOutput): Unit = {
-    avro2s.test.arrays.Fixed.WRITER$.write(this, org.apache.avro.specific.SpecificData.getEncoder(out))
-  }
+  override def writeExternal(out: java.io.ObjectOutput): Unit = avro2s.test.arrays.Fixed.WRITER$.write(this, org.apache.avro.specific.SpecificData.getEncoder(out))
 }
 object Fixed {
   val SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"fixed\",\"name\":\"Fixed\",\"namespace\":\"avro2s.test.arrays\",\"size\":2}")

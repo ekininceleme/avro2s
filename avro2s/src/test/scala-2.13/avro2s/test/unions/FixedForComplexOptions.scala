@@ -7,9 +7,7 @@ case class FixedForComplexOptions() extends org.apache.avro.specific.SpecificFix
     avro2s.test.unions.FixedForComplexOptions.READER$.read(this, org.apache.avro.specific.SpecificData.getDecoder(in))
     ()
   }
-  override def writeExternal(out: java.io.ObjectOutput): Unit = {
-    avro2s.test.unions.FixedForComplexOptions.WRITER$.write(this, org.apache.avro.specific.SpecificData.getEncoder(out))
-  }
+  override def writeExternal(out: java.io.ObjectOutput): Unit = avro2s.test.unions.FixedForComplexOptions.WRITER$.write(this, org.apache.avro.specific.SpecificData.getEncoder(out))
 }
 object FixedForComplexOptions {
   val SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"fixed\",\"name\":\"FixedForComplexOptions\",\"namespace\":\"avro2s.test.unions\",\"size\":16}")

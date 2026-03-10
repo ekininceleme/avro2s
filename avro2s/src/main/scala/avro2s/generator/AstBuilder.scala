@@ -29,6 +29,7 @@ private[avro2s] object AstBuilder {
     Scalafmt.format(code, fmtConfig).get
 
   case class CaseParam(name: String, tpe: String, mod: Option[String] = None)
+  case class DefParam(name: String, tpe: String)
 
   /** Strip backticks from identifier — the Scala 3 dialect will re-add them for all keywords. */
   private def cleanName(name: String): String =
@@ -82,6 +83,49 @@ private[avro2s] object AstBuilder {
       mods = Nil,
       name = Term.Name(name),
       templ = Template(Nil, Nil, Self(Name.Anonymous(), None), body, Nil)
+    )
+  }
+
+  def buildDef(
+    name: String,
+    paramss: List[List[DefParam]],
+    returnType: String,
+    body: String,
+    isOverride: Boolean = false
+  ): Defn.Def = {
+    val mods: List[Mod] = if (isOverride) List(Mod.Override()) else Nil
+    val paramClauseGroups: List[Member.ParamClauseGroup] = if (paramss.isEmpty) {
+      Nil
+    } else {
+      List(Member.ParamClauseGroup(
+        Type.ParamClause(Nil),
+        paramss.map { params =>
+          val termParams = params.map { p =>
+            Term.Param(Nil, Term.Name(cleanName(p.name)), Some(parseType(p.tpe)), None)
+          }
+          Term.ParamClause(termParams, None)
+        }
+      ))
+    }
+    Defn.Def(
+      mods = mods,
+      name = Term.Name(name),
+      paramClauseGroups = paramClauseGroups,
+      decltpe = Some(parseType(returnType)),
+      body = parseTerm(body)
+    )
+  }
+
+  def buildVal(
+    name: String,
+    tpe: Option[String],
+    rhs: String
+  ): Defn.Val = {
+    Defn.Val(
+      mods = Nil,
+      pats = List(Pat.Var(Term.Name(cleanName(name)))),
+      decltpe = tpe.map(parseType),
+      rhs = parseTerm(rhs)
     )
   }
 

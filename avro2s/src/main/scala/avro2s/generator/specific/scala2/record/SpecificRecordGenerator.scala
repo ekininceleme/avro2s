@@ -58,10 +58,10 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       stats += AstBuilder.buildSecondaryConstructor(toThis(fields))
     }
 
-    stats += AstBuilder.parseStat(s"""override def getSchema: org.apache.avro.Schema = $name.SCHEMA$$""")
+    stats += AstBuilder.buildDef("getSchema", Nil, "org.apache.avro.Schema", s"$name.SCHEMA$$", isOverride = true)
 
     if (generatorConfig.logicalTypesEnabled) {
-      stats += AstBuilder.parseStat(s"""override def getSpecificData(): org.apache.avro.specific.SpecificData = $name.MODEL$$""")
+      stats += AstBuilder.buildDef("getSpecificData", List(Nil), "org.apache.avro.specific.SpecificData", s"$name.MODEL$$", isOverride = true)
     }
 
     stats += buildGetMethod(fields)
@@ -75,37 +75,45 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
     stats.toList
   }
 
-  private def buildGetMethod(fields: List[Schema.Field]): Stat = {
+  private def buildGetMethod(fields: List[Schema.Field]): Defn.Def = {
     val cases = fields.zipWithIndex.map { case (field, idx) =>
       getCaseGenerator.generateFieldCase(idx, field)
     } :+ """case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")"""
 
     val matchBody = cases.mkString("\n")
-    AstBuilder.parseStat(
-      s"""override def get(field$$: Int): AnyRef = {
-         |  (field$$: @switch) match {
-         |    $matchBody
-         |  }
-         |}""".stripMargin
+    AstBuilder.buildDef(
+      "get",
+      List(List(AstBuilder.DefParam("field$", "Int"))),
+      "AnyRef",
+      s"""{
+         |(field$$: @switch) match {
+         |$matchBody
+         |}
+         |}""".stripMargin,
+      isOverride = true
     )
   }
 
-  private def buildPutMethod(fields: List[Schema.Field]): Stat = {
+  private def buildPutMethod(fields: List[Schema.Field]): Defn.Def = {
     val cases = fields.zipWithIndex.map { case (field, idx) =>
       putCaseGenerator.generateFieldCase(idx, field)
     } :+ """case _ => throw new org.apache.avro.AvroRuntimeException("Bad index")"""
 
     val matchBody = cases.mkString("\n")
-    AstBuilder.parseStat(
-      s"""override def put(field$$: Int, value: Any): Unit = {
-         |  (field$$: @switch) match {
-         |    $matchBody
-         |  }
-         |}""".stripMargin
+    AstBuilder.buildDef(
+      "put",
+      List(List(AstBuilder.DefParam("field$", "Int"), AstBuilder.DefParam("value", "Any"))),
+      "Unit",
+      s"""{
+         |(field$$: @switch) match {
+         |$matchBody
+         |}
+         |}""".stripMargin,
+      isOverride = true
     )
   }
 
-  private def buildGetConversionMethod(name: String, fields: List[Schema.Field]): Stat = {
+  private def buildGetConversionMethod(name: String, fields: List[Schema.Field]): Defn.Def = {
     val cases = fields.zipWithIndex.map { case (field, idx) =>
       ltc.getConversionClass(field.schema()) match {
         case Some(_) => s"case $idx => $name.${field.safeName}$$Conversion"
@@ -114,12 +122,16 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
     } :+ "case _ => null"
 
     val matchBody = cases.mkString("\n")
-    AstBuilder.parseStat(
-      s"""override def getConversion(field: Int): org.apache.avro.Conversion[_] = {
-         |  (field: @switch) match {
-         |    $matchBody
-         |  }
-         |}""".stripMargin
+    AstBuilder.buildDef(
+      "getConversion",
+      List(List(AstBuilder.DefParam("field", "Int"))),
+      "org.apache.avro.Conversion[_]",
+      s"""{
+         |(field: @switch) match {
+         |$matchBody
+         |}
+         |}""".stripMargin,
+      isOverride = true
     )
   }
 
@@ -127,18 +139,22 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
     val stats = scala.collection.mutable.ListBuffer[Stat]()
 
     val schemaJson = schema.toString.replace("\"", "\\\"")
-    stats += AstBuilder.parseStat(
-      s"""val SCHEMA$$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("$schemaJson")"""
+    stats += AstBuilder.buildVal(
+      "SCHEMA$",
+      Some("org.apache.avro.Schema"),
+      s"""new org.apache.avro.Schema.Parser().parse("$schemaJson")"""
     )
 
     if (generatorConfig.logicalTypesEnabled) {
       val conversions = LogicalTypes.allConversionClasses
-      val addConversions = conversions.map(cls => s"model.addLogicalTypeConversion(new $cls())").mkString("\n    ")
-      stats += AstBuilder.parseStat(
-        s"""val MODEL$$: org.apache.avro.specific.SpecificData = {
-           |  val model = new org.apache.avro.specific.SpecificData()
-           |  $addConversions
-           |  model
+      val addConversions = conversions.map(cls => s"model.addLogicalTypeConversion(new $cls())").mkString("\n")
+      stats += AstBuilder.buildVal(
+        "MODEL$",
+        Some("org.apache.avro.specific.SpecificData"),
+        s"""{
+           |val model = new org.apache.avro.specific.SpecificData()
+           |$addConversions
+           |model
            |}""".stripMargin
       )
     }
@@ -146,8 +162,10 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
     fields.foreach { field =>
       ltc.getConversionClass(field.schema()) match {
         case Some(cls) =>
-          stats += AstBuilder.parseStat(
-            s"val ${field.safeName}$$Conversion: org.apache.avro.Conversion[_] = new $cls()"
+          stats += AstBuilder.buildVal(
+            s"${field.name()}$$Conversion",
+            Some("org.apache.avro.Conversion[_]"),
+            s"new $cls()"
           )
         case None => // skip
       }
