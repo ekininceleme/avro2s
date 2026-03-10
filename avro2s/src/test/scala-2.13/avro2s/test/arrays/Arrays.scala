@@ -34,7 +34,7 @@ case class Arrays(var _array_of_arrays: List[List[String]], var _array_of_maps: 
               m.foreach { kvp =>
                 val key = kvp._1
                 val value = {
-                  kvp._2
+                  kvp._2.asInstanceOf[AnyRef]
                 }
                 map.put(key, value)
               }

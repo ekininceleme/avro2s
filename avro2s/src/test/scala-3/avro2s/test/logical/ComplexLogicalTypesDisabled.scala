@@ -16,7 +16,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
         _map.foreach { kvp =>
           val key = kvp._1
           val value = {
-            kvp._2
+            kvp._2.asInstanceOf[AnyRef]
           }
           map.put(key, value)
         }
@@ -74,7 +74,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
           x.foreach { kvp =>
             val key = kvp._1
             val value = {
-              kvp._2
+              kvp._2.asInstanceOf[AnyRef]
             }
             map.put(key, value)
           }
@@ -96,7 +96,7 @@ case class ComplexLogicalTypesDisabled(var _map: Map[String, String], var _array
               m.foreach { kvp =>
                 val key = kvp._1
                 val value = {
-                  kvp._2
+                  kvp._2.asInstanceOf[AnyRef]
                 }
                 map.put(key, value)
               }

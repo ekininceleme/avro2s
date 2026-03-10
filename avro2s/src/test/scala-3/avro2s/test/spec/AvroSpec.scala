@@ -33,7 +33,7 @@ case class AvroSpec(var _null: scala.Null, var _boolean: Boolean, var _int: Int,
         _map.foreach { kvp =>
           val key = kvp._1
           val value = {
-            kvp._2
+            kvp._2.asInstanceOf[AnyRef]
           }
           map.put(key, value)
         }

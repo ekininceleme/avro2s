@@ -26,7 +26,7 @@ case class RecordWithExplicitNamespace(var _string: String, var _record_with_nam
         _map_of_records.foreach { kvp =>
           val key = kvp._1
           val value = {
-            kvp._2
+            kvp._2.asInstanceOf[AnyRef]
           }
           map.put(key, value)
         }

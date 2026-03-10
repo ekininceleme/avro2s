@@ -232,7 +232,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
           x.foreach { kvp =>
             val key = kvp._1
             val value = {
-              kvp._2
+              kvp._2.asInstanceOf[AnyRef]
             }
             map.put(key, value)
           }
@@ -272,7 +272,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
           x.foreach { kvp =>
             val key = kvp._1
             val value = {
-              kvp._2
+              kvp._2.asInstanceOf[AnyRef]
             }
             map.put(key, value)
           }
@@ -291,7 +291,7 @@ case class Unions(var _union_of_map_of_union: String :+: Long :+: Boolean :+: Ma
               kvp._2.foreach { kvp =>
                 val key = kvp._1
                 val value = {
-                  kvp._2
+                  kvp._2.asInstanceOf[AnyRef]
                 }
                 map.put(key, value)
               }
