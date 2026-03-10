@@ -106,7 +106,7 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
           .call(asBytes(_, input, schema))
       case _ =>
         if (ltc.logicalTypeInUse(schema)) {
-          printer.add(ltc.toTypeAcceptBoth(schema, input))
+          printer.add(s"$input.asInstanceOf[${ltc.getType(schema, schemaToScalaType(schema, false))}]")
         } else {
           printer.add(ltc.toType(schema, typeCast(input, schema)))
         }
@@ -136,18 +136,16 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
                 .outdent
                 .result())
             case _ =>
-              t.getType match {
-                case Type.STRING =>
-                  val logicalCase = ltc.logicalReceiveType(t).map { lrt =>
-                    s"case x: $lrt => ${union.toConstructString("x")}"
-                  }.toList
-                  logicalCase :+ s"case x: org.apache.avro.util.Utf8 => ${union.toConstructString(ltc.toType(t, "x.toString"))}"
-                case Type.NULL => List(s"case null => None")
-                case _ =>
-                  val logicalCase = ltc.logicalReceiveType(t).map { lrt =>
-                    s"case x: $lrt => ${union.toConstructString("x")}"
-                  }.toList
-                  logicalCase :+ s"case x: ${simpleTypeToScalaReceiveType(t.getType)} => ${union.toConstructString(ltc.toType(t, "x"))}"
+              if (ltc.logicalTypeInUse(t)) {
+                List(s"case x: ${ltc.getType(t, simpleTypeToScalaReceiveType(t.getType))} => ${union.toConstructString("x")}")
+              } else {
+                t.getType match {
+                  case Type.STRING =>
+                    List(s"case x: org.apache.avro.util.Utf8 => ${union.toConstructString(ltc.toType(t, "x.toString"))}")
+                  case Type.NULL => List(s"case null => None")
+                  case _ =>
+                    List(s"case x: ${simpleTypeToScalaReceiveType(t.getType)} => ${union.toConstructString(ltc.toType(t, "x"))}")
+                }
               }
           }
         } :+ "case _ => throw new org.apache.avro.AvroRuntimeException(\"Unexpected type: \" + value.getClass.getName)"
@@ -184,7 +182,7 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
           .call(asBytes(_, "value", schema))
       case _ =>
         if (ltc.logicalTypeInUse(schema)) {
-          printer.add(ltc.toTypeAcceptBoth(schema, "value"))
+          printer.add(s"value.asInstanceOf[${ltc.getType(schema, schemaToScalaType(schema, false))}]")
         } else {
           printer.add(ltc.toType(schema, typeCast("value", schema)))
         }
