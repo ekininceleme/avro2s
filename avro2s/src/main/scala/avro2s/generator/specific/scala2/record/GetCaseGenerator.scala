@@ -16,6 +16,9 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
 
   import typeHelpers._
 
+  def generateFieldCase(index: Int, field: Schema.Field): String =
+    printFieldCase(new FunctionalPrinter(), index, field).result()
+
   def printFieldCase(printer: FunctionalPrinter, index: Int, field: Schema.Field): FunctionalPrinter = {
     field.schema().getType match {
       case UNION => printUnionCase(printer, index, field)

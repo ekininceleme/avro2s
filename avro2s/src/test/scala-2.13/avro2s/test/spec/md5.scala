@@ -1,7 +1,5 @@
 /** GENERATED CODE */
-
 package avro2s.test.spec
-
 case class md5() extends org.apache.avro.specific.SpecificFixed {
   override def getSchema: org.apache.avro.Schema = md5.SCHEMA$
   override def readExternal(in: java.io.ObjectInput): Unit = {
@@ -12,7 +10,6 @@ case class md5() extends org.apache.avro.specific.SpecificFixed {
     avro2s.test.spec.md5.WRITER$.write(this, org.apache.avro.specific.SpecificData.getEncoder(out))
   }
 }
-
 object md5 {
   val SCHEMA$ = new org.apache.avro.Schema.Parser().parse("""{"type":"fixed","name":"md5","namespace":"avro2s.test.spec","size":16}""")
   val READER$ = new org.apache.avro.specific.SpecificDatumReader[md5](md5.SCHEMA$, md5.SCHEMA$, new org.apache.avro.specific.SpecificData())

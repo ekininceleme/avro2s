@@ -1,7 +1,5 @@
 /** GENERATED CODE */
-
 package avro2s.test.arrays
-
 case class FixedB() extends org.apache.avro.specific.SpecificFixed {
   override def getSchema: org.apache.avro.Schema = FixedB.SCHEMA$
   override def readExternal(in: java.io.ObjectInput): Unit = {
@@ -12,7 +10,6 @@ case class FixedB() extends org.apache.avro.specific.SpecificFixed {
     avro2s.test.arrays.FixedB.WRITER$.write(this, org.apache.avro.specific.SpecificData.getEncoder(out))
   }
 }
-
 object FixedB {
   val SCHEMA$ = new org.apache.avro.Schema.Parser().parse("""{"type":"fixed","name":"FixedB","namespace":"avro2s.test.arrays","size":2}""")
   val READER$ = new org.apache.avro.specific.SpecificDatumReader[FixedB](FixedB.SCHEMA$, FixedB.SCHEMA$, new org.apache.avro.specific.SpecificData())

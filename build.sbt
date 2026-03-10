@@ -51,6 +51,7 @@ lazy val avro2s = (projectMatrix in file("avro2s"))
       "io.circe" %% "circe-core" % "0.14.13",
       "io.circe" %% "circe-parser" % "0.14.13",
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.13.0",
+      "org.scalameta" %% "scalameta" % "4.12.2",
       // Test
       "org.scalatest" %% "scalatest" % "3.2.19" % Test,
       "org.slf4j" % "slf4j-api" % "1.7.36" % Test,

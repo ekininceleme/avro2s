@@ -1,7 +1,5 @@
 /** GENERATED CODE */
-
 package avro2s.test.unions
-
 case class FixedForComplexOptions() extends org.apache.avro.specific.SpecificFixed {
   override def getSchema: org.apache.avro.Schema = FixedForComplexOptions.SCHEMA$
   override def readExternal(in: java.io.ObjectInput): Unit = {
@@ -12,7 +10,6 @@ case class FixedForComplexOptions() extends org.apache.avro.specific.SpecificFix
     avro2s.test.unions.FixedForComplexOptions.WRITER$.write(this, org.apache.avro.specific.SpecificData.getEncoder(out))
   }
 }
-
 object FixedForComplexOptions {
   val SCHEMA$ = new org.apache.avro.Schema.Parser().parse("""{"type":"fixed","name":"FixedForComplexOptions","namespace":"avro2s.test.unions","size":16}""")
   val READER$ = new org.apache.avro.specific.SpecificDatumReader[FixedForComplexOptions](FixedForComplexOptions.SCHEMA$, FixedForComplexOptions.SCHEMA$, new org.apache.avro.specific.SpecificData())
