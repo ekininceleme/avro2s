@@ -23,7 +23,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
             kvp._2.foreach { kvp =>
               val key = kvp._1
               val value = {
-                kvp._2
+                kvp._2.asInstanceOf[AnyRef]
               }
               map.put(key, value)
             }
@@ -116,7 +116,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
                 m.foreach { kvp =>
                   val key = kvp._1
                   val value = {
-                    kvp._2
+                    kvp._2.asInstanceOf[AnyRef]
                   }
                   map.put(key, value)
                 }
@@ -182,7 +182,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         _map_of_fixed.foreach { kvp =>
           val key = kvp._1
           val value = {
-            kvp._2
+            kvp._2.asInstanceOf[AnyRef]
           }
           map.put(key, value)
         }
@@ -193,7 +193,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         _map_of_enum.foreach { kvp =>
           val key = kvp._1
           val value = {
-            kvp._2
+            kvp._2.asInstanceOf[AnyRef]
           }
           map.put(key, value)
         }
@@ -204,7 +204,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         _map_of_record.foreach { kvp =>
           val key = kvp._1
           val value = {
-            kvp._2
+            kvp._2.asInstanceOf[AnyRef]
           }
           map.put(key, value)
         }
@@ -242,7 +242,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         _map_of_string.foreach { kvp =>
           val key = kvp._1
           val value = {
-            kvp._2
+            kvp._2.asInstanceOf[AnyRef]
           }
           map.put(key, value)
         }
@@ -253,7 +253,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         _map_of_int.foreach { kvp =>
           val key = kvp._1
           val value = {
-            kvp._2
+            kvp._2.asInstanceOf[AnyRef]
           }
           map.put(key, value)
         }
@@ -264,7 +264,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         _map_of_long.foreach { kvp =>
           val key = kvp._1
           val value = {
-            kvp._2
+            kvp._2.asInstanceOf[AnyRef]
           }
           map.put(key, value)
         }
@@ -275,7 +275,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         _map_of_float.foreach { kvp =>
           val key = kvp._1
           val value = {
-            kvp._2
+            kvp._2.asInstanceOf[AnyRef]
           }
           map.put(key, value)
         }
@@ -286,7 +286,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         _map_of_double.foreach { kvp =>
           val key = kvp._1
           val value = {
-            kvp._2
+            kvp._2.asInstanceOf[AnyRef]
           }
           map.put(key, value)
         }
@@ -297,7 +297,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         _map_of_boolean.foreach { kvp =>
           val key = kvp._1
           val value = {
-            kvp._2
+            kvp._2.asInstanceOf[AnyRef]
           }
           map.put(key, value)
         }
@@ -308,7 +308,7 @@ case class Maps(var _map_of_maps: Map[String, Map[String, String]], var _map_of_
         _map_of_null.foreach { kvp =>
           val key = kvp._1
           val value = {
-            kvp._2
+            kvp._2.asInstanceOf[AnyRef]
           }
           map.put(key, value)
         }

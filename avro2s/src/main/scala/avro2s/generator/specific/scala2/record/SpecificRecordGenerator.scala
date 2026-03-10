@@ -40,6 +40,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .when(schema.getFields.toArray.length > 0)(_.add(toThis(fields)))
       .newline
       .add(s"override def getSchema: org.apache.avro.Schema = $name.SCHEMA$dollar")
+      .when(generatorConfig.logicalTypesEnabled)(_.newline.add(s"override def getSpecificData(): org.apache.avro.specific.SpecificData = $name.MODEL$dollar"))
       .newline
       .add("override def get(field$: Int): AnyRef = {")
       .indent
@@ -73,6 +74,7 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .add(s"object $name {")
       .indent
       .add(s"""val SCHEMA$dollar: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(\"\"\"${schema.toString}\"\"\")""")
+      .call(printModel(_))
       .call(printConversionVals(_, fields))
       .outdent
       .add("}")
@@ -100,6 +102,21 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .add("}")
       .outdent
       .add("}")
+  }
+
+  private def printModel(printer: FunctionalPrinter): FunctionalPrinter = {
+    if (!generatorConfig.logicalTypesEnabled) printer
+    else {
+      val conversions = LogicalTypes.allConversionClasses
+      printer
+        .add(s"val MODEL$dollar: org.apache.avro.specific.SpecificData = {")
+        .indent
+        .add("val model = new org.apache.avro.specific.SpecificData()")
+        .add(conversions.map(cls => s"model.addLogicalTypeConversion(new $cls())"): _*)
+        .add("model")
+        .outdent
+        .add("}")
+    }
   }
 
   private def printConversionVals(printer: FunctionalPrinter, fields: List[Schema.Field]): FunctionalPrinter = {

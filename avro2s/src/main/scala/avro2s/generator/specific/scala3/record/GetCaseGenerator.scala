@@ -98,16 +98,16 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
               .add(s"$input.map { m =>")
               .indent
               .call(printMapValue(_, schema.getElementType, "m"))
-          case BYTES =>
+          case BYTES if !ltc.logicalTypeInUse(schema.getElementType) =>
             printer
               .add(s"$input.map { bytes =>")
               .indent
-              .add(ltc.fromTypeWithFallback(schema.getElementType, "bytes", "java.nio.ByteBuffer.wrap(bytes)"))
+              .add("java.nio.ByteBuffer.wrap(bytes)")
           case _ =>
             printer
               .add(s"$input.map { x =>")
               .indent
-              .add(s"${ltc.fromType(schema.getElementType, "x")}.asInstanceOf[AnyRef]")
+              .add(s"x.asInstanceOf[AnyRef]")
         }
       })
       .outdent
@@ -143,12 +143,12 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
       case ARRAY =>
         printer
           .call(printArrayValue(_, schema, "kvp._2"))
-      case BYTES =>
+      case BYTES if !ltc.logicalTypeInUse(schema) =>
         printer
-          .add(ltc.fromTypeWithFallback(schema, input, s"java.nio.ByteBuffer.wrap($input)"))
+          .add(s"java.nio.ByteBuffer.wrap($input)")
       case _ =>
         printer
-          .add(ltc.fromType(schema, input))
+          .add(s"$input.asInstanceOf[AnyRef]")
     }
   }
 
@@ -159,8 +159,8 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
         case UNION => s"\n${printUnionPatternMatch(new FunctionalPrinter(indentLevel = 1), TypeUnion(schemas(schema))).result()}"
         case ARRAY if schema.getElementType.isUnion => s"\nscala.jdk.CollectionConverters.BufferHasAsJava({\n  x.map {${x(schema.getElementType)}\n  }\n}.toBuffer).asJava.asInstanceOf[AnyRef]"
         case ARRAY => s"\nscala.jdk.CollectionConverters.BufferHasAsJava({\n  x.map { x =>${x(schema.getElementType)}\n  }\n}.toBuffer).asJava.asInstanceOf[AnyRef]"
-        case BYTES => ltc.fromTypeWithFallback(schema, "x", s"\njava.nio.ByteBuffer.wrap(x).asInstanceOf[AnyRef]")
-        case _ => s"${ltc.fromType(schema, "x")}.asInstanceOf[AnyRef]"
+        case BYTES if !ltc.logicalTypeInUse(schema) => s"\njava.nio.ByteBuffer.wrap(x).asInstanceOf[AnyRef]"
+        case _ => s"x.asInstanceOf[AnyRef]"
       }
     }
 

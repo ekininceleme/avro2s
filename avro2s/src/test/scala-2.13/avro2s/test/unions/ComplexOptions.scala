@@ -37,7 +37,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
                 x.foreach { kvp =>
                   val key = kvp._1
                   val value = {
-                    kvp._2
+                    kvp._2.asInstanceOf[AnyRef]
                   }
                   map.put(key, value)
                 }
@@ -85,7 +85,7 @@ case class ComplexOptions(var _map_of_option_of_record: Map[String, Option[avro2
                 x.foreach { kvp =>
                   val key = kvp._1
                   val value = {
-                    kvp._2
+                    kvp._2.asInstanceOf[AnyRef]
                   }
                   map.put(key, value)
                 }
