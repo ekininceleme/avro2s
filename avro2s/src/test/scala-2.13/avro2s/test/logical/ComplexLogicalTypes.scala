@@ -211,7 +211,7 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
               val key = kvp._1.toString
               val value = kvp._2
               (key, {
-                (value match { case x: java.util.UUID => x; case x => java.util.UUID.fromString(x.toString) })
+                value.asInstanceOf[java.util.UUID]
               })
             }
           }
@@ -224,7 +224,7 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
               val key = kvp._1.toString
               val value = kvp._2
               (key, {
-                (value match { case x: java.time.LocalDate => x; case x => java.time.LocalDate.ofEpochDay(x.asInstanceOf[Int]) })
+                value.asInstanceOf[java.time.LocalDate]
               })
             }
           }
@@ -234,7 +234,7 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
         value match {
           case array: java.util.List[_] =>
             scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-              (value match { case x: java.time.LocalDate => x; case x => java.time.LocalDate.ofEpochDay(x.asInstanceOf[Int]) })
+              value.asInstanceOf[java.time.LocalDate]
             }).toList
           }
       }
@@ -242,7 +242,6 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
         value match {
           case x: Int => Coproduct[Int :+: java.time.Instant :+: CNil](x)
           case x: java.time.Instant => Coproduct[Int :+: java.time.Instant :+: CNil](x)
-          case x: Long => Coproduct[Int :+: java.time.Instant :+: CNil]({java.time.Instant.ofEpochMilli(x)})
           case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
         }
       }
@@ -250,14 +249,12 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
         value match {
           case null => None
           case x: java.util.UUID => Some(x)
-          case x: org.apache.avro.util.Utf8 => Some({java.util.UUID.fromString(x.toString)})
         }
       }
       case 5 => this._option_alt = {
         value match {
           case null => None
           case x: java.time.LocalDate => Some(x)
-          case x: Int => Some({java.time.LocalDate.ofEpochDay(x)})
         }
       }
       case 6 => this._map_union = {
@@ -270,7 +267,6 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
                 value match {
                   case x: Int => Coproduct[Int :+: java.time.Instant :+: CNil](x)
                   case x: java.time.Instant => Coproduct[Int :+: java.time.Instant :+: CNil](x)
-                  case x: Long => Coproduct[Int :+: java.time.Instant :+: CNil]({java.time.Instant.ofEpochMilli(x)})
                   case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
                 }
               })
@@ -288,7 +284,6 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
                 value match {
                   case null => None
                   case x: java.time.Instant => Some(x)
-                  case x: Long => Some({java.time.Instant.ofEpochMilli(x)})
                 }
               })
             }
@@ -305,7 +300,7 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
                 value match {
                   case array: java.util.List[_] =>
                     scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                      (value match { case x: java.time.LocalDate => x; case x => java.time.LocalDate.ofEpochDay(x.asInstanceOf[Int]) })
+                      value.asInstanceOf[java.time.LocalDate]
                     }).toList
                   }
               })
@@ -321,7 +316,7 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
               val key = kvp._1.toString
               val value = kvp._2
               (key, {
-                (value match { case x: java.util.UUID => x; case x => java.util.UUID.fromString(x.toString) })
+                value.asInstanceOf[java.util.UUID]
               })
             }
           }
@@ -336,7 +331,7 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
               val key = kvp._1.toString
               val value = kvp._2
               (key, {
-                (value match { case x: java.time.LocalDate => x; case x => java.time.LocalDate.ofEpochDay(x.asInstanceOf[Int]) })
+                value.asInstanceOf[java.time.LocalDate]
               })
             }
           }
@@ -350,7 +345,7 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
             x match {
               case array: java.util.List[_] =>
                 scala.jdk.CollectionConverters.IteratorHasAsScala(array.iterator).asScala.map({ value =>
-                  (value match { case x: java.time.LocalDate => x; case x => java.time.LocalDate.ofEpochDay(x.asInstanceOf[Int]) })
+                  value.asInstanceOf[java.time.LocalDate]
                 }).toList
               }
           }.toList)
@@ -367,7 +362,7 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
                     val key = kvp._1.toString
                     val value = kvp._2
                     (key, {
-                      (value match { case x: java.util.UUID => x; case x => java.util.UUID.fromString(x.toString) })
+                      value.asInstanceOf[java.util.UUID]
                     })
                   }
                 }
@@ -385,7 +380,7 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
                     val key = kvp._1.toString
                     val value = kvp._2
                     (key, {
-                      (value match { case x: java.time.LocalDate => x; case x => java.time.LocalDate.ofEpochDay(x.asInstanceOf[Int]) })
+                      value.asInstanceOf[java.time.LocalDate]
                     })
                   }
                 }
@@ -400,7 +395,6 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
               value match {
                 case x: Int => Coproduct[Int :+: java.time.Instant :+: CNil](x)
                 case x: java.time.Instant => Coproduct[Int :+: java.time.Instant :+: CNil](x)
-                case x: Long => Coproduct[Int :+: java.time.Instant :+: CNil]({java.time.Instant.ofEpochMilli(x)})
                 case _ => throw new AvroRuntimeException("Unexpected type: " + value.getClass.getName)
               }
             }).toList
@@ -413,7 +407,6 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
               value match {
                 case null => None
                 case x: java.util.UUID => Some(x)
-                case x: org.apache.avro.util.Utf8 => Some({java.util.UUID.fromString(x.toString)})
               }
             }).toList
           }
@@ -425,7 +418,6 @@ case class ComplexLogicalTypes(var _map: Map[String, java.util.UUID], var _map_a
               value match {
                 case null => None
                 case x: java.time.LocalDate => Some(x)
-                case x: Int => Some({java.time.LocalDate.ofEpochDay(x)})
               }
             }).toList
           }

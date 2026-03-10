@@ -60,23 +60,6 @@ private[avro2s] object LogicalTypes {
       }
     }
 
-    def toTypeAcceptBoth(schema: Schema, value: String): String = {
-      Option(schema.getLogicalType).map { logicalType =>
-        val key = LogicalTypeKey(schema.getType, logicalType.getName)
-        logicalTypeMap.get(key) match {
-          case Some(lt) if lt.validate(schema) => lt.toTypeAcceptBoth(value, schema)
-          case _ => value
-        }
-      }.getOrElse(value)
-    }
-
-    def logicalReceiveType(schema: Schema): Option[String] = {
-      Option(schema.getLogicalType).flatMap { logicalType =>
-        val key = LogicalTypeKey(schema.getType, logicalType.getName)
-        logicalTypeMap.get(key).filter(_.validate(schema)).map(_.getType(schema))
-      }
-    }
-    
     def getDefault(schema: Schema): String = Option(schema.getLogicalType).map { logicalType =>
       val schemaType = schema.getType
       val logicalTypeName = logicalType.getName
@@ -100,25 +83,6 @@ private[avro2s] object LogicalTypes {
     def defaultValue(schema: Schema): String
 
     def conversionClass: String
-
-    def toTypeAcceptBoth(value: String, schema: Schema): String = {
-      val castedX = schema.getType match {
-        case STRING => "x.toString"
-        case _ => s"x.asInstanceOf[${primitiveScalaType(schema.getType)}]"
-      }
-      s"($value match { case x: ${getType(schema)} => x; case x => ${toType(castedX, schema)} })"
-    }
-
-    private def primitiveScalaType(schemaType: Type): String = schemaType match {
-      case INT => "Int"
-      case LONG => "Long"
-      case FLOAT => "Float"
-      case DOUBLE => "Double"
-      case BOOLEAN => "Boolean"
-      case STRING => "String"
-      case BYTES => "Array[Byte]"
-      case t => throw new IllegalArgumentException(s"Unsupported primitive type: $t")
-    }
   }
 
   case object UUID extends LogicalType("uuid", Set(STRING)) {

@@ -130,7 +130,7 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
           .add("}")
       case _ =>
         if (ltc.logicalTypeInUse(schema)) {
-          printer.add(ltc.toTypeAcceptBoth(schema, valueName))
+          printer.add(s"$valueName.asInstanceOf[${ltc.getType(schema, schemaToScalaType(schema, false))}]")
         } else {
           printer.add(ltc.toType(schema, typeCast(valueName, schema)))
         }
@@ -166,7 +166,7 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
           .call(matchBytes(_, "value", schema))
       case _ =>
         if (ltc.logicalTypeInUse(schema)) {
-          printer.add(ltc.toTypeAcceptBoth(schema, "value"))
+          printer.add(s"value.asInstanceOf[${ltc.getType(schema, schemaToScalaType(schema, false))}]")
         } else {
           printer.add(ltc.toType(schema, typeCast("value", schema)))
         }
@@ -198,13 +198,14 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
                 .add("}.toList)")
                 .result())
             case _ =>
-              val typeName = simpleTypeToScalaReceiveType(t.getType)
-              val x = toStringConverter("x", t)
-              val `case` = if (t.getType == Type.NULL) "x @ null" else s"x: $typeName"
-              val logicalCase = ltc.logicalReceiveType(t).map { lrt =>
-                s"case x: $lrt => Coproduct[${union.asString(typeHelpers)}](x)"
-              }.toList
-              logicalCase :+ s"case ${`case`} => Coproduct[${union.asString(typeHelpers)}](${ltc.toType(t, x)})"
+              if (ltc.logicalTypeInUse(t)) {
+                List(s"case x: ${ltc.getType(t, simpleTypeToScalaReceiveType(t.getType))} => Coproduct[${union.asString(typeHelpers)}](x)")
+              } else {
+                val typeName = simpleTypeToScalaReceiveType(t.getType)
+                val x = toStringConverter("x", t)
+                val `case` = if (t.getType == Type.NULL) "x @ null" else s"x: $typeName"
+                List(s"case ${`case`} => Coproduct[${union.asString(typeHelpers)}](${ltc.toType(t, x)})")
+              }
           }
         } :+ "case _ => throw new AvroRuntimeException(\"Unexpected type: \" + value.getClass.getName)"
       }.mkString("\n"))
@@ -235,13 +236,13 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
             nullCasePrinter
               .add(s"case x: ${schema.getFullName} => Some(${ltc.toType(schema, "x")})")
           case _ =>
-            val x = toStringConverter("x", schema)
-            val xCase = Try(s"x: ${simpleTypeToScalaReceiveType(schema.getType)}").getOrElse("x")
-            val withLogicalCase = ltc.logicalReceiveType(schema).map { lrt =>
-              nullCasePrinter.add(s"case x: $lrt => Some(x)")
-            }.getOrElse(nullCasePrinter)
-            withLogicalCase
-              .add(s"case $xCase => Some(${ltc.toType(schema, x)})")
+            if (ltc.logicalTypeInUse(schema)) {
+              nullCasePrinter.add(s"case x: ${ltc.getType(schema, simpleTypeToScalaReceiveType(schema.getType))} => Some(x)")
+            } else {
+              val x = toStringConverter("x", schema)
+              val xCase = Try(s"x: ${simpleTypeToScalaReceiveType(schema.getType)}").getOrElse("x")
+              nullCasePrinter.add(s"case $xCase => Some(${ltc.toType(schema, x)})")
+            }
         }
     }
   }
