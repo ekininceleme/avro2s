@@ -228,6 +228,4 @@ private[avro2s] object LogicalTypes {
         LogicalTypeKey(at, lt.name) -> lt
       }
     }.toMap
-
-  val allConversionClasses: List[String] = supportedLogicalTypes.map(_.conversionClass).distinct
 }

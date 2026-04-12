@@ -74,8 +74,8 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
       .add(s"object $name {")
       .indent
       .add(s"""val SCHEMA$dollar: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse(\"\"\"${schema.toString}\"\"\")""")
-      .call(printModel(_))
       .call(printConversionVals(_, fields))
+      .call(printModel(_, fields))
       .outdent
       .add("}")
 
@@ -83,36 +83,45 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
   }
 
   private def printGetConversion(printer: FunctionalPrinter, name: String, fields: List[Schema.Field]): FunctionalPrinter = {
-    val hasAnyConversion = fields.exists(f => ltc.getConversionClass(f.schema()).isDefined)
-    if (!hasAnyConversion) printer
-    else printer
-      .newline
-      .add("override def getConversion(field: Int): org.apache.avro.Conversion[_] = {")
-      .indent
-      .add("(field: @switch) match {")
-      .indent
-      .print(fields.zipWithIndex) { case (p, (field, idx)) =>
-        ltc.getConversionClass(field.schema()) match {
-          case Some(_) => p.add(s"case $idx => $name.${field.safeName}$$Conversion")
-          case None => p.add(s"case $idx => null")
-        }
-      }
-      .add("case _ => null")
-      .outdent
-      .add("}")
-      .outdent
-      .add("}")
-  }
-
-  private def printModel(printer: FunctionalPrinter): FunctionalPrinter = {
     if (!generatorConfig.logicalTypesEnabled) printer
     else {
-      val conversions = LogicalTypes.allConversionClasses
+      val hasAnyConversion = fields.exists(f => ltc.logicalTypeInUse(f.schema()))
+      if (!hasAnyConversion) printer
+      else printer
+        .newline
+        .add("override def getConversion(field: Int): org.apache.avro.Conversion[_] = {")
+        .indent
+        .add("(field: @switch) match {")
+        .indent
+        .print(fields.zipWithIndex) { case (p, (field, idx)) =>
+          ltc.getConversionClass(field.schema()) match {
+            case Some(cls) =>
+              val shortName = cls.split('.').last
+              p.add(s"case $idx => $name.$dollar$shortName")
+            case None =>
+              p.add(s"case $idx => null")
+          }
+        }
+        .add("case _ => null")
+        .outdent
+        .add("}")
+        .outdent
+        .add("}")
+    }
+  }
+
+  private def printModel(printer: FunctionalPrinter, fields: List[Schema.Field]): FunctionalPrinter = {
+    if (!generatorConfig.logicalTypesEnabled) printer
+    else {
+      val distinctConversions = fields.flatMap(f => ltc.getConversionClass(f.schema())).distinct
       printer
         .add(s"val MODEL$dollar: org.apache.avro.specific.SpecificData = {")
         .indent
         .add("val model = new org.apache.avro.specific.SpecificData()")
-        .add(conversions.map(cls => s"model.addLogicalTypeConversion(new $cls())"): _*)
+        .add(distinctConversions.map { cls =>
+          val shortName = cls.split('.').last
+          s"model.addLogicalTypeConversion($dollar$shortName)"
+        }: _*)
         .add("model")
         .outdent
         .add("}")
@@ -120,11 +129,10 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
   }
 
   private def printConversionVals(printer: FunctionalPrinter, fields: List[Schema.Field]): FunctionalPrinter = {
-    fields.foldLeft(printer) { (p, field) =>
-      ltc.getConversionClass(field.schema()) match {
-        case Some(cls) => p.add(s"val ${field.safeName}$$Conversion: org.apache.avro.Conversion[_] = new $cls()")
-        case None => p
-      }
+    val distinctConversions = fields.flatMap(f => ltc.getConversionClass(f.schema())).distinct
+    distinctConversions.foldLeft(printer) { (p, cls) =>
+      val shortName = cls.split('.').last
+      p.add(s"val $dollar$shortName: org.apache.avro.Conversion[_] = new $cls()")
     }
   }
 
