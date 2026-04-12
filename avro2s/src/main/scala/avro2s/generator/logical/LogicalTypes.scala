@@ -60,6 +60,19 @@ private[avro2s] object LogicalTypes {
       }
     }
 
+    /** Recursively collects all distinct conversion class names referenced within a schema,
+     *  including those nested inside MAP values, ARRAY items, and UNION branches.
+     */
+    def collectConversionClasses(schema: Schema): List[String] = {
+      import scala.jdk.CollectionConverters._
+      schema.getType match {
+        case Schema.Type.MAP   => collectConversionClasses(schema.getValueType)
+        case Schema.Type.ARRAY => collectConversionClasses(schema.getElementType)
+        case Schema.Type.UNION => schema.getTypes.asScala.toList.flatMap(collectConversionClasses)
+        case _                 => getConversionClass(schema).toList
+      }
+    }
+
     def getDefault(schema: Schema): String = Option(schema.getLogicalType).map { logicalType =>
       val schemaType = schema.getType
       val logicalTypeName = logicalType.getName
