@@ -71,7 +71,7 @@ private[avro2s] class GetCaseGenerator(ltc: LogicalTypeConverter) {
       .add(s"case $index => ${ltc.fromTypeWithFallback(field.schema(), field.safeName, s"java.nio.ByteBuffer.wrap(${field.safeName})")}.asInstanceOf[AnyRef]")
 
   private def printDefaultCase(printer: FunctionalPrinter, index: Int, field: Schema.Field): FunctionalPrinter =
-    if (ltc.getConversionClass(field.schema()).isDefined) {
+    if (ltc.logicalTypeInUse(field.schema())) {
       printer.add(s"case $index => ${field.safeName}.asInstanceOf[AnyRef]")
     } else {
       printer.add(s"case $index => ${ltc.fromType(field.schema(), s"${field.safeName}")}.asInstanceOf[AnyRef]")

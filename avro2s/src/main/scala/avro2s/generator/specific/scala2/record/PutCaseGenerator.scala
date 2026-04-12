@@ -55,7 +55,7 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
         printer
           .add(s"case $index => this.${field.safeName} = ${ltc.toTypeWithFallback(field.schema(), value, fallback)}")
       case _ =>
-        if (ltc.getConversionClass(field.schema()).isDefined) {
+        if (ltc.logicalTypeInUse(field.schema())) {
           printer
             .add(s"case $index => this.${field.safeName} = value.asInstanceOf[${ltc.getType(field.schema(), schemaToScalaType(field.schema, false))}]")
         } else {

@@ -77,7 +77,7 @@ private[avro2s] class PutCaseGenerator(ltc: LogicalTypeConverter) {
   }
 
   private def asDefault(printer: FunctionalPrinter, input: String, schema: Schema): FunctionalPrinter = {
-    if (ltc.getConversionClass(schema).isDefined) {
+    if (ltc.logicalTypeInUse(schema)) {
       printer.add(s"$input.asInstanceOf[${ltc.getType(schema, schemaToScalaType(schema, false))}]")
     } else {
       val value = s"${toStringConverter(input, schema)}.asInstanceOf[${schemaToScalaType(schema, false)}]"
