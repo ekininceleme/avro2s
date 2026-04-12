@@ -254,18 +254,15 @@ class SerializationTest extends AnyFunSuite with Matchers {
 
 
   test("logical types can be serialized and deserialized") {
-    val now = java.time.Instant.now()
-    val nowMillis = java.time.Instant.ofEpochMilli(now.toEpochMilli)
-    val nowMicros = java.time.Instant.ofEpochSecond(now.getEpochSecond, (now.getNano / 1000L) * 1000L)
     val logicalTypes = avro2s.test.logical.LogicalTypes(
-      _uuid = UUID.randomUUID(),
-      _date = java.time.LocalDate.now(),
-      _time_millis = java.time.LocalTime.ofNanoOfDay((java.time.LocalTime.now().toNanoOfDay / 1000000L) * 1000000L),
-      _time_micros = java.time.LocalTime.ofNanoOfDay((java.time.LocalTime.now().toNanoOfDay / 1000L) * 1000L),
-      _timestamp_millis = nowMillis,
-      _timestamp_micros = nowMicros,
-      _local_timestamp_millis = java.time.LocalDateTime.ofInstant(nowMillis, java.time.ZoneId.of("UTC")),
-      _local_timestamp_micros = java.time.LocalDateTime.ofInstant(nowMicros, java.time.ZoneId.of("UTC"))
+      _uuid = UUID.fromString("550e8400-e29b-41d4-a716-446655440000"),
+      _date = java.time.LocalDate.of(2009, 2, 13),
+      _time_millis = java.time.LocalTime.ofNanoOfDay(45296123000000L),
+      _time_micros = java.time.LocalTime.ofNanoOfDay(45296123456000L),
+      _timestamp_millis = java.time.Instant.ofEpochMilli(1234567890123L),
+      _timestamp_micros = java.time.Instant.ofEpochSecond(1234567890L, 123456000L),
+      _local_timestamp_millis = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(1234567890123L), java.time.ZoneOffset.UTC),
+      _local_timestamp_micros = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(1234567890L, 123456000L), java.time.ZoneOffset.UTC)
     )
 
     deserialize[avro2s.test.logical.LogicalTypes](serialize(logicalTypes), logicalTypes.getSchema) shouldBe logicalTypes
@@ -273,39 +270,40 @@ class SerializationTest extends AnyFunSuite with Matchers {
 
   test("logical types disabled can be serialized and deserialized") {
     val logicalTypesDisabled = avro2s.test.logical.LogicalTypesDisabled(
-      _uuid = UUID.randomUUID().toString,
-      _date = java.time.LocalDate.now().toEpochDay.toInt,
-      _time_millis = java.time.LocalTime.now().toNanoOfDay.toInt / 1000000,
-      _time_micros = java.time.LocalTime.now().toNanoOfDay / 1000,
-      _timestamp_millis = java.time.Instant.now().toEpochMilli,
-      _timestamp_micros = java.time.Instant.now().toEpochMilli * 1000,
-      _local_timestamp_millis = java.time.LocalDateTime.now().toInstant(java.time.ZoneOffset.UTC).toEpochMilli,
-      _local_timestamp_micros = java.time.LocalDateTime.now().toInstant(java.time.ZoneOffset.UTC).toEpochMilli * 1000
+      _uuid = "550e8400-e29b-41d4-a716-446655440000",
+      _date = 14288,
+      _time_millis = 45296123,
+      _time_micros = 45296123456L,
+      _timestamp_millis = 1234567890123L,
+      _timestamp_micros = 1234567890123456L,
+      _local_timestamp_millis = 1234567890123L,
+      _local_timestamp_micros = 1234567890123456L
     )
 
     deserializeWithoutConversions[avro2s.test.logical.LogicalTypesDisabled](serializeWithoutConversions(logicalTypesDisabled), logicalTypesDisabled.getSchema) shouldBe logicalTypesDisabled
   }
 
   test("logical complex types can be serialized and deserialized") {
-    def truncateMillis(i: Instant): Instant = Instant.ofEpochMilli(i.toEpochMilli)
+    val ts = Instant.ofEpochMilli(1234567890123L)
+    val date = LocalDate.of(2009, 2, 13)
     val logicalComplexTypes = avro2s.test.logical.ComplexLogicalTypes(
-      _map = Map("a" -> UUID.randomUUID, "c" -> UUID.randomUUID),
-      _map_alt = Map("a" -> LocalDate.now, "c" -> LocalDate.now),
-      _array = List(LocalDate.now),
-      _union = truncateMillis(Instant.now),
-      _option = Some(UUID.randomUUID),
-      _option_alt = Some(LocalDate.now),
-      _map_union = Map("a" -> truncateMillis(Instant.now), "c" -> 1),
-      _map_option = Map("a" -> Some(truncateMillis(Instant.now)), "c" -> None),
-      _map_array = Map("a" -> List(LocalDate.now, LocalDate.now)),
-      _union_map = Map("a" -> UUID.randomUUID),
-      _union_map_alt = Map("a" -> LocalDate.now),
-      _union_array = List(LocalDate.now),
-      _array_map = List(Map("a" -> UUID.randomUUID), Map("e" -> UUID.randomUUID)),
-      _array_map_alt = List(Map("a" -> LocalDate.now), Map("e" -> LocalDate.now)),
-      _array_union = List(truncateMillis(Instant.now), 1),
-      _array_option = List(Some(UUID.randomUUID), None),
-      _array_option_alt = List(Some(LocalDate.now), None)
+      _map = Map("a" -> UUID.fromString("550e8400-e29b-41d4-a716-446655440000"), "c" -> UUID.fromString("550e8400-e29b-41d4-a716-446655440001")),
+      _map_alt = Map("a" -> date, "c" -> date),
+      _array = List(date),
+      _union = ts,
+      _option = Some(UUID.fromString("550e8400-e29b-41d4-a716-446655440002")),
+      _option_alt = Some(date),
+      _map_union = Map("a" -> ts, "c" -> 1),
+      _map_option = Map("a" -> Some(ts), "c" -> None),
+      _map_array = Map("a" -> List(date, date)),
+      _union_map = Map("a" -> UUID.fromString("550e8400-e29b-41d4-a716-446655440003")),
+      _union_map_alt = Map("a" -> date),
+      _union_array = List(date),
+      _array_map = List(Map("a" -> UUID.fromString("550e8400-e29b-41d4-a716-446655440004")), Map("e" -> UUID.fromString("550e8400-e29b-41d4-a716-446655440005"))),
+      _array_map_alt = List(Map("a" -> date), Map("e" -> date)),
+      _array_union = List(ts, 1),
+      _array_option = List(Some(UUID.fromString("550e8400-e29b-41d4-a716-446655440006")), None),
+      _array_option_alt = List(Some(date), None)
     )
 
     val serialized = serialize(logicalComplexTypes)
@@ -314,17 +312,17 @@ class SerializationTest extends AnyFunSuite with Matchers {
 
   test("logical complex types disabled can be serialized and deserialized") {
     val logicalComplexTypesDisabled = avro2s.test.logical.ComplexLogicalTypesDisabled(
-      _map = Map("a" -> UUID.randomUUID.toString, "c" -> UUID.randomUUID.toString),
-      _array = List(LocalDate.now.toEpochDay.toInt),
-      _union = Instant.now.toEpochMilli,
-      _option = Some(UUID.randomUUID.toString),
-      _map_union = Map("a" -> Instant.now.toEpochMilli, "c" -> 1L),
-      _map_array = Map("a" -> List(LocalDate.now.toEpochDay.toInt, LocalDate.now.toEpochDay.toInt)),
-      _union_map = Map("a" -> UUID.randomUUID.toString),
-      _union_array = List(LocalDate.now.toEpochDay.toInt),
-      _array_map = List(Map("a" -> UUID.randomUUID.toString), Map("e" -> UUID.randomUUID.toString)),
-      _array_union = List(Instant.now.toEpochMilli, 1L),
-      _array_option = List(Some(UUID.randomUUID.toString), None)
+      _map = Map("a" -> "550e8400-e29b-41d4-a716-446655440000", "c" -> "550e8400-e29b-41d4-a716-446655440001"),
+      _array = List(14288),
+      _union = 1234567890123L,
+      _option = Some("550e8400-e29b-41d4-a716-446655440002"),
+      _map_union = Map("a" -> 1234567890123L, "c" -> 1L),
+      _map_array = Map("a" -> List(14288, 14288)),
+      _union_map = Map("a" -> "550e8400-e29b-41d4-a716-446655440003"),
+      _union_array = List(14288),
+      _array_map = List(Map("a" -> "550e8400-e29b-41d4-a716-446655440004"), Map("e" -> "550e8400-e29b-41d4-a716-446655440005")),
+      _array_union = List(1234567890123L, 1L),
+      _array_option = List(Some("550e8400-e29b-41d4-a716-446655440006"), None)
     )
 
     val serialized = serializeWithoutConversions(logicalComplexTypesDisabled)
