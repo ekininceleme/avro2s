@@ -129,10 +129,13 @@ private[avro2s] class SpecificRecordGenerator(generatorConfig: GeneratorConfig) 
   }
 
   private def printConversionVals(printer: FunctionalPrinter, fields: List[Schema.Field]): FunctionalPrinter = {
-    val distinctConversions = fields.flatMap(f => ltc.getConversionClass(f.schema())).distinct
-    distinctConversions.foldLeft(printer) { (p, cls) =>
-      val shortName = cls.split('.').last
-      p.add(s"val $dollar$shortName: org.apache.avro.Conversion[_] = new $cls()")
+    if (!generatorConfig.logicalTypesEnabled) printer
+    else {
+      val distinctConversions = fields.flatMap(f => ltc.getConversionClass(f.schema())).distinct
+      distinctConversions.foldLeft(printer) { (p, cls) =>
+        val shortName = cls.split('.').last
+        p.add(s"val $dollar$shortName: org.apache.avro.Conversion[_] = new $cls()")
+      }
     }
   }
 
