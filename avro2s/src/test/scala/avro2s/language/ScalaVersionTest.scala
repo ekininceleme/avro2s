@@ -18,10 +18,21 @@ class ScalaVersionTest extends AnyFunSuite with Matchers {
     ScalaVersion.fromString("3.3") shouldBe ScalaVersion.Scala_3
   }
   
+  test("fromString should return Scala_2_13 when given 2.12") {
+    ScalaVersion.fromString("2.12") shouldBe ScalaVersion.Scala_2_13
+  }
+
   test("fromString should throw ConfigError when given an invalid Scala version") {
+    val thrown = intercept[avro2s.error.Error.ConfigError] {
+      ScalaVersion.fromString("invalid")
+    }
+    thrown.getMessage shouldBe "Invalid Scala version: invalid"
+  }
+
+  test("fromString should throw ConfigError when given an unsupported Scala version") {
     val thrown = intercept[avro2s.error.Error.ConfigError] {
       ScalaVersion.fromString("2.14")
     }
-    thrown.getMessage shouldBe "Invalid Scala version: 2.14"
+    thrown.getMessage shouldBe "Unsupported Scala version: 2.14"
   }
 }

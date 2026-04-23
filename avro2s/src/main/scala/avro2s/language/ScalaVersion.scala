@@ -10,10 +10,11 @@ object ScalaVersion {
   
   private val pattern = """^\d+\.\d+$"""
   def fromString(s: String): ScalaVersion = s match {
-    case "2.13" => Scala_2_13
+    case "2.13" | "2.12" => Scala_2_13
     case "3" | "3.X" | "3.x" => Scala_3
+    case _ if (s.startsWith("2.13.") || s.startsWith("2.12.")) && s.matches(pattern) => Scala_2_13
     case _ if s.startsWith("3.") && s.matches(pattern) => Scala_3
-    case _ if !pattern.matches(s) => throw ConfigError(s"Invalid Scala version: $s")
+    case _ if !s.matches(pattern) => throw ConfigError(s"Invalid Scala version: $s")
     case _ => throw ConfigError(s"Unsupported Scala version: $s")
-  } 
+  }
 }
