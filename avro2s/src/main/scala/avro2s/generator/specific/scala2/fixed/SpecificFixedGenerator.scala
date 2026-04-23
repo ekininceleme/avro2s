@@ -1,5 +1,6 @@
 package avro2s.generator.specific.scala2.fixed
 
+import avro2s.generator.specific.SchemaLiteral
 import avro2s.generator.{FunctionalPrinter, GeneratedCode}
 
 private[avro2s] object SpecificFixedGenerator {
