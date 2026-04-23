@@ -46,6 +46,7 @@ class SchemaLiteralTest extends AnyFunSuite with Matchers {
   test("chunked form produces three chunks for 130001 char input") {
     val json = "x" * 130001
     val result = SchemaLiteral.parseExpression(json)
-    result.split("\"\"\"").count(_.nonEmpty) shouldBe 7
+    val contents = result.split("\"\"\"").zipWithIndex.collect { case (seg, i) if i % 2 == 1 => seg }
+    contents should have length 3
   }
 }
