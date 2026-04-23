@@ -17,6 +17,8 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
   private val fixedTimestampMicros = java.time.Instant.ofEpochSecond(1234567890L, 123456000L)
   private val fixedLocalTimestampMillis = java.time.LocalDateTime.ofInstant(fixedTimestampMillis, java.time.ZoneOffset.UTC)
   private val fixedLocalTimestampMicros = java.time.LocalDateTime.ofInstant(fixedTimestampMicros, java.time.ZoneOffset.UTC)
+  private val fixedTimestampNanos = java.time.Instant.ofEpochSecond(1234567890L, 123456789L)
+  private val fixedLocalTimestampNanos = java.time.LocalDateTime.ofInstant(fixedTimestampNanos, java.time.ZoneOffset.UTC)
 
   test("time-millis should work at the edges") {
     def logicalTypes(time: java.time.LocalTime) = avro2s.test.logical.LogicalTypes(
@@ -27,7 +29,9 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
       _timestamp_millis = fixedTimestampMillis,
       _timestamp_micros = fixedTimestampMicros,
       _local_timestamp_millis = fixedLocalTimestampMillis,
-      _local_timestamp_micros = fixedLocalTimestampMicros
+      _local_timestamp_micros = fixedLocalTimestampMicros,
+      _timestamp_nanos = fixedTimestampNanos,
+      _local_timestamp_nanos = fixedLocalTimestampNanos
     )
 
     val startOfDay = java.time.LocalTime.ofNanoOfDay(0)
@@ -55,7 +59,9 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
       _timestamp_millis = fixedTimestampMillis,
       _timestamp_micros = fixedTimestampMicros,
       _local_timestamp_millis = fixedLocalTimestampMillis,
-      _local_timestamp_micros = fixedLocalTimestampMicros
+      _local_timestamp_micros = fixedLocalTimestampMicros,
+      _timestamp_nanos = fixedTimestampNanos,
+      _local_timestamp_nanos = fixedLocalTimestampNanos
     )
 
     val startOfDay = java.time.LocalTime.ofNanoOfDay(0)
@@ -83,7 +89,9 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
       _timestamp_millis = time,
       _timestamp_micros = fixedTimestampMicros,
       _local_timestamp_millis = fixedLocalTimestampMillis,
-      _local_timestamp_micros = fixedLocalTimestampMicros
+      _local_timestamp_micros = fixedLocalTimestampMicros,
+      _timestamp_nanos = fixedTimestampNanos,
+      _local_timestamp_nanos = fixedLocalTimestampNanos
     )
 
     val startOfEpoch = java.time.Instant.ofEpochMilli(0)
@@ -124,7 +132,9 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
       _timestamp_millis = fixedTimestampMillis,
       _timestamp_micros = time,
       _local_timestamp_millis = fixedLocalTimestampMillis,
-      _local_timestamp_micros = fixedLocalTimestampMicros
+      _local_timestamp_micros = fixedLocalTimestampMicros,
+      _timestamp_nanos = fixedTimestampNanos,
+      _local_timestamp_nanos = fixedLocalTimestampNanos
     )
 
     val startOfEpoch = java.time.Instant.ofEpochSecond(0, 0)
@@ -165,7 +175,9 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
       _timestamp_millis = fixedTimestampMillis,
       _timestamp_micros = fixedTimestampMicros,
       _local_timestamp_millis = time,
-      _local_timestamp_micros = fixedLocalTimestampMicros
+      _local_timestamp_micros = fixedLocalTimestampMicros,
+      _timestamp_nanos = fixedTimestampNanos,
+      _local_timestamp_nanos = fixedLocalTimestampNanos
     )
 
     val startOfEpoch = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(0), java.time.ZoneId.of("UTC"))
@@ -206,7 +218,9 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
       _timestamp_millis = fixedTimestampMillis,
       _timestamp_micros = fixedTimestampMicros,
       _local_timestamp_millis = fixedLocalTimestampMillis,
-      _local_timestamp_micros = time
+      _local_timestamp_micros = time,
+      _timestamp_nanos = fixedTimestampNanos,
+      _local_timestamp_nanos = fixedLocalTimestampNanos
     )
 
     val startOfEpoch = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(0, 0), java.time.ZoneId.of("UTC"))

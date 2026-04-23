@@ -286,7 +286,9 @@ class SerializationTest extends AnyFunSuite with Matchers {
       _timestamp_millis = java.time.Instant.ofEpochMilli(1234567890123L),
       _timestamp_micros = java.time.Instant.ofEpochSecond(1234567890L, 123456000L),
       _local_timestamp_millis = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(1234567890123L), java.time.ZoneOffset.UTC),
-      _local_timestamp_micros = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(1234567890L, 123456000L), java.time.ZoneOffset.UTC)
+      _local_timestamp_micros = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(1234567890L, 123456000L), java.time.ZoneOffset.UTC),
+      _timestamp_nanos = java.time.Instant.ofEpochSecond(1234567890L, 123456789L),
+      _local_timestamp_nanos = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(1234567890L, 123456789L), java.time.ZoneOffset.UTC)
     )
 
     deserialize[avro2s.test.logical.LogicalTypes](serialize(logicalTypes), logicalTypes.getSchema) shouldBe logicalTypes

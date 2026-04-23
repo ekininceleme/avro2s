@@ -194,6 +194,35 @@ private[avro2s] object LogicalTypes {
     override def conversionClass: String = "org.apache.avro.data.TimeConversions.LocalTimestampMicrosConversion"
   }
 
+  case object TimestampNanosecondPrecision extends LogicalType("timestamp-nanos", Set(LONG)) {
+    override def toType(value: String, schema: Schema): String =
+      s"java.time.Instant.ofEpochSecond($value / 1_000_000_000L, $value % 1_000_000_000L)"
+
+    override def fromType(value: String, schema: Schema): String =
+      s"$value.getEpochSecond * 1_000_000_000L + $value.getNano"
+
+    override def getType(schema: Schema): String = "java.time.Instant"
+
+    override def defaultValue(schema: Schema): String = "java.time.Instant.ofEpochSecond(0L, 0L)"
+
+    override def conversionClass: String = "org.apache.avro.data.TimeConversions.TimestampNanosConversion"
+  }
+
+  case object LocalTimestampNanosecondPrecision extends LogicalType("local-timestamp-nanos", Set(LONG)) {
+    override def toType(value: String, schema: Schema): String =
+      s"java.time.LocalDateTime.ofEpochSecond($value / 1_000_000_000L, ($value % 1_000_000_000L).toInt, java.time.ZoneOffset.UTC)"
+
+    override def fromType(value: String, schema: Schema): String =
+      s"$value.toEpochSecond(java.time.ZoneOffset.UTC) * 1_000_000_000L + $value.getNano"
+
+    override def getType(schema: Schema): String = "java.time.LocalDateTime"
+
+    override def defaultValue(schema: Schema): String =
+      "java.time.LocalDateTime.ofEpochSecond(0L, 0, java.time.ZoneOffset.UTC)"
+
+    override def conversionClass: String = "org.apache.avro.data.TimeConversions.LocalTimestampNanosConversion"
+  }
+
   // TODO: implement decimal
   case object Decimal extends LogicalType("decimal", Set(BYTES, FIXED)) {
     override def toType(value: String, schema: Schema): String = ???
@@ -230,7 +259,9 @@ private[avro2s] object LogicalTypes {
     TimestampMillisecondPrecision,
     TimestampMicrosecondPrecision,
     LocalTimestampMillisecondPrecision,
-    LocalTimestampMicrosecondPrecision
+    LocalTimestampMicrosecondPrecision,
+    TimestampNanosecondPrecision,
+    LocalTimestampNanosecondPrecision
   )
 
   case class LogicalTypeKey(schemaType: Type, logicalTypeName: String)
