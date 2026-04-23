@@ -72,6 +72,15 @@
         "type": "long",
         "logicalType": "local-timestamp-nanos"
       }
+    },
+    {
+      "name": "_decimal",
+      "type": {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 10,
+        "scale": 2
+      }
     }
   ]
 }

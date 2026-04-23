@@ -56,7 +56,7 @@ private[avro2s] object LogicalTypes {
     def getConversionClass(schema: Schema): Option[String] = {
       Option(schema.getLogicalType).flatMap { logicalType =>
         val key = LogicalTypeKey(schema.getType, logicalType.getName)
-        logicalTypeMap.get(key).filter(_.validate(schema)).map(_.conversionClass)
+        logicalTypeMap.get(key).filter(_.validate(schema)).map(_.conversionClass).filter(_.nonEmpty)
       }
     }
 
@@ -223,17 +223,31 @@ private[avro2s] object LogicalTypes {
     override def conversionClass: String = "org.apache.avro.data.TimeConversions.LocalTimestampNanosConversion"
   }
 
-  // TODO: implement decimal
   case object Decimal extends LogicalType("decimal", Set(BYTES, FIXED)) {
-    override def toType(value: String, schema: Schema): String = ???
+    override def toType(value: String, schema: Schema): String = {
+      val scale = Option(schema.getLogicalType)
+        .collect { case d: org.apache.avro.LogicalTypes.Decimal => d }
+        .map(_.getScale)
+        .getOrElse(0)
+      s"scala.math.BigDecimal(new java.math.BigDecimal(new java.math.BigInteger($value.array()), $scale))"
+    }
 
-    override def fromType(value: String, schema: Schema): String = ???
+    override def fromType(value: String, schema: Schema): String = {
+      val scale = Option(schema.getLogicalType)
+        .collect { case d: org.apache.avro.LogicalTypes.Decimal => d }
+        .map(_.getScale)
+        .getOrElse(0)
+      s"java.nio.ByteBuffer.wrap($value.setScale($scale).bigDecimal.unscaledValue().toByteArray)"
+    }
 
-    override def getType(schema: Schema): String = ???
+    override def getType(schema: Schema): String = "scala.math.BigDecimal"
 
-    override def defaultValue(schema: Schema): String = ???
+    override def defaultValue(schema: Schema): String = "scala.math.BigDecimal(0)"
 
-    override def conversionClass: String = ???
+    override def conversionClass: String = ""
+
+    override def validate(schema: Schema): Boolean =
+      Option(schema.getLogicalType).exists(_.isInstanceOf[org.apache.avro.LogicalTypes.Decimal])
   }
 
   // TODO: Implement duration
@@ -261,7 +275,8 @@ private[avro2s] object LogicalTypes {
     LocalTimestampMillisecondPrecision,
     LocalTimestampMicrosecondPrecision,
     TimestampNanosecondPrecision,
-    LocalTimestampNanosecondPrecision
+    LocalTimestampNanosecondPrecision,
+    Decimal
   )
 
   case class LogicalTypeKey(schemaType: Type, logicalTypeName: String)
