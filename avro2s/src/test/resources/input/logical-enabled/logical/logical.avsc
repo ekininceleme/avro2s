@@ -81,6 +81,13 @@
         "precision": 10,
         "scale": 2
       }
+    },
+    {
+      "name": "_big_decimal",
+      "type": {
+        "type": "bytes",
+        "logicalType": "big-decimal"
+      }
     }
   ]
 }

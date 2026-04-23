@@ -32,7 +32,8 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
       _local_timestamp_micros = fixedLocalTimestampMicros,
       _timestamp_nanos = fixedTimestampNanos,
       _local_timestamp_nanos = fixedLocalTimestampNanos,
-      _decimal = scala.math.BigDecimal("12345.67")
+      _decimal = scala.math.BigDecimal("12345.67"),
+      _big_decimal = new java.math.BigDecimal("12345.67")
     )
 
     val startOfDay = java.time.LocalTime.ofNanoOfDay(0)
@@ -63,7 +64,8 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
       _local_timestamp_micros = fixedLocalTimestampMicros,
       _timestamp_nanos = fixedTimestampNanos,
       _local_timestamp_nanos = fixedLocalTimestampNanos,
-      _decimal = scala.math.BigDecimal("12345.67")
+      _decimal = scala.math.BigDecimal("12345.67"),
+      _big_decimal = new java.math.BigDecimal("12345.67")
     )
 
     val startOfDay = java.time.LocalTime.ofNanoOfDay(0)
@@ -94,7 +96,8 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
       _local_timestamp_micros = fixedLocalTimestampMicros,
       _timestamp_nanos = fixedTimestampNanos,
       _local_timestamp_nanos = fixedLocalTimestampNanos,
-      _decimal = scala.math.BigDecimal("12345.67")
+      _decimal = scala.math.BigDecimal("12345.67"),
+      _big_decimal = new java.math.BigDecimal("12345.67")
     )
 
     val startOfEpoch = java.time.Instant.ofEpochMilli(0)
@@ -138,7 +141,8 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
       _local_timestamp_micros = fixedLocalTimestampMicros,
       _timestamp_nanos = fixedTimestampNanos,
       _local_timestamp_nanos = fixedLocalTimestampNanos,
-      _decimal = scala.math.BigDecimal("12345.67")
+      _decimal = scala.math.BigDecimal("12345.67"),
+      _big_decimal = new java.math.BigDecimal("12345.67")
     )
 
     val startOfEpoch = java.time.Instant.ofEpochSecond(0, 0)
@@ -182,7 +186,8 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
       _local_timestamp_micros = fixedLocalTimestampMicros,
       _timestamp_nanos = fixedTimestampNanos,
       _local_timestamp_nanos = fixedLocalTimestampNanos,
-      _decimal = scala.math.BigDecimal("12345.67")
+      _decimal = scala.math.BigDecimal("12345.67"),
+      _big_decimal = new java.math.BigDecimal("12345.67")
     )
 
     val startOfEpoch = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochMilli(0), java.time.ZoneId.of("UTC"))
@@ -226,7 +231,8 @@ class LogicalTypesTest extends AnyFunSuite with Matchers {
       _local_timestamp_micros = time,
       _timestamp_nanos = fixedTimestampNanos,
       _local_timestamp_nanos = fixedLocalTimestampNanos,
-      _decimal = scala.math.BigDecimal("12345.67")
+      _decimal = scala.math.BigDecimal("12345.67"),
+      _big_decimal = new java.math.BigDecimal("12345.67")
     )
 
     val startOfEpoch = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(0, 0), java.time.ZoneId.of("UTC"))

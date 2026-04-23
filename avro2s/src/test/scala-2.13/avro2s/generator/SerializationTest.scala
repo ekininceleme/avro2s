@@ -289,7 +289,8 @@ class SerializationTest extends AnyFunSuite with Matchers {
       _local_timestamp_micros = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(1234567890L, 123456000L), java.time.ZoneOffset.UTC),
       _timestamp_nanos = java.time.Instant.ofEpochSecond(1234567890L, 123456789L),
       _local_timestamp_nanos = java.time.LocalDateTime.ofInstant(java.time.Instant.ofEpochSecond(1234567890L, 123456789L), java.time.ZoneOffset.UTC),
-      _decimal = scala.math.BigDecimal("12345.67")
+      _decimal = scala.math.BigDecimal("12345.67"),
+      _big_decimal = new java.math.BigDecimal("12345.67")
     )
 
     deserialize[avro2s.test.logical.LogicalTypes](serialize(logicalTypes), logicalTypes.getSchema) shouldBe logicalTypes

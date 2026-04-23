@@ -46,6 +46,11 @@ private[avro2s] object LogicalTypes {
       }.getOrElse(default)
     }
     
+    def avroAutoConverts(schema: Schema): Boolean = Option(schema.getLogicalType).exists { logicalType =>
+      val key = LogicalTypeKey(schema.getType, logicalType.getName)
+      logicalTypeMap.get(key).exists(lt => lt.validate(schema) && lt.avroAutoConverts)
+    }
+
     def logicalTypeInUse(schema: Schema): Boolean = Option(schema.getLogicalType).exists { logicalType =>
       val schemaType = schema.getType
       val logicalTypeName = logicalType.getName
@@ -96,6 +101,11 @@ private[avro2s] object LogicalTypes {
     def defaultValue(schema: Schema): String
 
     def conversionClass: String
+
+    /** True if Avro automatically converts this BYTES-backed type to the target Scala type
+     *  before calling put(), meaning put() receives the target type directly rather than a ByteBuffer.
+     */
+    def avroAutoConverts: Boolean = false
   }
 
   case object UUID extends LogicalType("uuid", Set(STRING)) {
@@ -250,6 +260,24 @@ private[avro2s] object LogicalTypes {
       Option(schema.getLogicalType).exists(_.isInstanceOf[org.apache.avro.LogicalTypes.Decimal])
   }
 
+  case object AvroJavaBigDecimal extends LogicalType("big-decimal", Set(BYTES)) {
+    override def toType(value: String, schema: Schema): String =
+      s"$value.asInstanceOf[java.math.BigDecimal]"
+
+    override def fromType(value: String, schema: Schema): String =
+      s"new org.apache.avro.Conversions.BigDecimalConversion().toBytes($value, null, null)"
+
+    override def getType(schema: Schema): String = "java.math.BigDecimal"
+
+    override def defaultValue(schema: Schema): String = "java.math.BigDecimal.ZERO"
+
+    override def validate(schema: Schema): Boolean = schema.getType == BYTES
+
+    override def conversionClass: String = ""
+
+    override def avroAutoConverts: Boolean = true
+  }
+
   case object Duration extends LogicalType("duration", Set(FIXED)) {
     override def toType(value: String, schema: Schema): String =
       s"$value.asInstanceOf[org.apache.avro.generic.GenericFixed].bytes()"
@@ -277,7 +305,8 @@ private[avro2s] object LogicalTypes {
     TimestampNanosecondPrecision,
     LocalTimestampNanosecondPrecision,
     Decimal,
-    Duration
+    Duration,
+    AvroJavaBigDecimal
   )
 
   case class LogicalTypeKey(schemaType: Type, logicalTypeName: String)
