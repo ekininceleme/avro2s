@@ -250,19 +250,19 @@ private[avro2s] object LogicalTypes {
       Option(schema.getLogicalType).exists(_.isInstanceOf[org.apache.avro.LogicalTypes.Decimal])
   }
 
-  // TODO: Implement duration
   case object Duration extends LogicalType("duration", Set(FIXED)) {
-    override def toType(value: String, schema: Schema): String = ???
+    override def toType(value: String, schema: Schema): String =
+      s"$value.asInstanceOf[org.apache.avro.generic.GenericFixed].bytes()"
 
-    override def fromType(value: String, schema: Schema): String = ???
+    override def fromType(value: String, schema: Schema): String = value
 
-    override def getType(schema: Schema): String = ???
+    override def getType(schema: Schema): String = "Array[Byte]"
 
     override def validate(schema: Schema): Boolean = schema.getFixedSize == 12
 
-    override def defaultValue(schema: Schema): String = ???
+    override def defaultValue(schema: Schema): String = "Array.fill(12)(0.toByte)"
 
-    override def conversionClass: String = ???
+    override def conversionClass: String = ""
   }
 
   private val supportedLogicalTypes: List[LogicalType] = List(
@@ -276,7 +276,8 @@ private[avro2s] object LogicalTypes {
     LocalTimestampMicrosecondPrecision,
     TimestampNanosecondPrecision,
     LocalTimestampNanosecondPrecision,
-    Decimal
+    Decimal,
+    Duration
   )
 
   case class LogicalTypeKey(schemaType: Type, logicalTypeName: String)
