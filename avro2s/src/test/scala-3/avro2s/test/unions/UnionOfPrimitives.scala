@@ -36,5 +36,5 @@ case class UnionOfPrimitives(var _primitives: Long | Boolean | Int) extends org.
 }
 
 object UnionOfPrimitives {
-  val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"UnionOfPrimitives","namespace":"avro2s.test.unions","fields":[{"name":"_primitives","type":["long","boolean","int"]}]}""")
+  @scala.annotation.static val SCHEMA$: org.apache.avro.Schema = new org.apache.avro.Schema.Parser().parse("""{"type":"record","name":"UnionOfPrimitives","namespace":"avro2s.test.unions","fields":[{"name":"_primitives","type":["long","boolean","int"]}]}""")
 }
